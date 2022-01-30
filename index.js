@@ -97,14 +97,16 @@ const Reload = require('./lib/commands/load');
 const ListPlayers = require('./lib/commands/listplayers');
 const Impersonate = require('./lib/commands/impersonate');
 const CreateEntity = require('./lib/commands/createentity');
+const NameMe = require('./lib/commands/NameMe')
 
 handler.AddHandler(new Look('Look'))
-handler.AddHandler(new CreateRoom('Create Room'))
-handler.AddHandler(new ListRooms('List Room'))
 handler.AddHandler(new LinkExit('Link Exit'))
 handler.AddHandler(new Tp('Tp'))
-handler.AddHandler(new DescribeRoom('Describe Room'))
-handler.AddHandler(new DescribeMe('Describe Me'))
+handler.AddHandler(new ListRooms('Room List'))
+handler.AddHandler(new CreateRoom('Room Create'))
+handler.AddHandler(new DescribeRoom('Room Describe'))
+handler.AddHandler(new DescribeMe('Me Describe'))
+handler.AddHandler(new NameMe('Me Name'))
 handler.AddHandler(new Me('Me'))
 handler.AddHandler(new Save('Save'))
 handler.AddHandler(new Reload('Reload'))
