@@ -98,6 +98,7 @@ const ListPlayers = require('./lib/commands/listplayers');
 const Impersonate = require('./lib/commands/impersonate');
 const CreateEntity = require('./lib/commands/createentity');
 const NameMe = require('./lib/commands/NameMe')
+const DescribeEntity = require('./lib/commands/describeentity')
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
@@ -113,7 +114,8 @@ handler.AddHandler(new Reload('Reload'))
 handler.AddHandler(new ListPlayers('List Players'))
 handler.AddHandler(new Impersonate('Impersonate'))
 handler.AddHandler(new LinkExit('Link Exit'))
-handler.AddHandler(new CreateEntity('Create Entity'))
+handler.AddHandler(new CreateEntity('Entity Create'))
+handler.AddHandler(new DescribeEntity('Entity Describe'))
 
 // Load data files if there are any.
 function loadData () {
