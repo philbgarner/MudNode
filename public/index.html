@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <title>Express session demo</title>
+
+      <style type="text/css">
+        #messages {
+          height: 80vh;
+          overflow: none;
+          overflow-y: scroll;
+          font-family:'Courier New', Courier, monospace;
+          white-space: pre;
+          background-color: #000;
+          color: #c0c0c0;
+        }
+
+        #loginpanel, #registerpanel {
+          display: none;
+          padding: 1em;
+        }
+
+        #loginpanel > *, #registerpanel > * {
+          display: block;
+        }
+
+        .showlogin {
+          background-color: white;
+          display: block !important;
+          position: absolute;
+          width: 25vw;
+          height: 25vh;
+          top: 5vh;
+          left: 35vw;
+        }
+
+        .showregister {
+          background-color: white;
+          display: block !important;
+          position: absolute;
+          width: 25vw;
+          height: 25vh;
+          top: 5vh;
+          left: 35vw;
+        }
+      </style>
+  </head>
+  <body>
+    <div id="loginpanel">
+      <h1>Login</h1>
+      <input type='text' id='username' />
+      <input type='password' id='passw' />
+      <button id="login" type="button" title="Login">
+        Login
+      </button>
+      <button id="showregister" type="button" title="Register">
+        Register
+      </button>
+    </div>
+    <div id="registerpanel">
+      <h1>Login</h1>
+      <input type='text' id='regusername' />
+      <input type='password' id='regpassw' />
+      <button id="btnRegister" type="button" title="Register your User">
+        Register
+      </button>
+    </div>
+    <div id="messages" style="height: 80vh; overflow: scroll"></div>
+    <input type='text' id='command'/>
+    <button id="wsSendButton" type="button" title="Send">
+      Send
+    </button>
+
+    <script src="app.js"></script>
+  </body>
+</html>

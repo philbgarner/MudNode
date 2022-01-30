@@ -1,0 +1,7 @@
+{
+    "datafolder": "data",
+    "playersfile": "players.json",
+    "roomsfile": "rooms.json",
+    "usersfile": "users.json",
+    "autosaveTimeout": 60000
+}
