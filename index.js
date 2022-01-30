@@ -61,7 +61,6 @@ app.delete('/logout', function (request, response) {
   console.log('Destroying session');
   request.session.destroy(function () {
     if (ws) ws.close();
-
     response.send({ result: 'OK', message: 'Session destroyed' });
   });
 });
@@ -170,7 +169,7 @@ wss.on('connection', function (ws, request) {
     //
     if (!handler.Parse(ws, userId, message.toString())) {
       if (!handler.DefaultHandler(ws, userId, message.toString())) {
-        ws.send(`Invalid command '${command}'`)
+        ws.send(`Invalid command '${message.toString()}'`)
       }
     }
   });
