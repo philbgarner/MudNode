@@ -184,9 +184,10 @@ wss.on('connection', function (ws, request) {
 //
 // Load data and then start the server.
 //
-loadData().then(() =>
-  server.listen(8080, function () {
-    console.log('Listening on http://localhost:8080');
-    let saveData = require('./lib/data').save
-    let autoSave = setInterval(() => saveData(true, true, true).then(() => console.log('Autosave complete.')), require('./lib/config.json').autosaveTimeout)
-  }))
+loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceeding with empty data.`))
+  .finally(() =>
+    server.listen(8080, function () {
+      console.log('Listening on http://localhost:8080');
+      let saveData = require('./lib/data').save
+      let autoSave = setInterval(() => saveData(true, true, true).then(() => console.log('Autosave complete.')), require('./lib/config.json').autosaveTimeout)
+    }))
