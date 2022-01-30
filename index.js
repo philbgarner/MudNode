@@ -96,6 +96,7 @@ const Save = require('./lib/commands/save');
 const Reload = require('./lib/commands/load');
 const ListPlayers = require('./lib/commands/listplayers');
 const Impersonate = require('./lib/commands/impersonate');
+const CreateEntity = require('./lib/commands/createentity');
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new CreateRoom('Create Room'))
@@ -110,6 +111,7 @@ handler.AddHandler(new Reload('Reload'))
 handler.AddHandler(new ListPlayers('List Players'))
 handler.AddHandler(new Impersonate('Impersonate'))
 handler.AddHandler(new LinkExit('Link Exit'))
+handler.AddHandler(new CreateEntity('Create Entity'))
 
 // Load data files if there are any.
 function loadData () {
