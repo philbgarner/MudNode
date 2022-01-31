@@ -11,6 +11,11 @@ const users = require('./lib/users')
 const entities = require('./lib/entities')
 
 //
+// Load config info
+//
+const config = require('./lib/config.json')
+
+//
 // We need the same instance of the session parser in express and
 // WebSocket server.
 //
@@ -101,6 +106,8 @@ const CreateEntity = require('./lib/commands/createentity');
 const NameMe = require('./lib/commands/NameMe')
 const DescribeEntity = require('./lib/commands/describeentity');
 const CreateMobile = require('./lib/commands/createmobile');
+const MobileAddComponent = require('./lib/commands/mobileaddcomponent');
+const EntityAddComponent = require('./lib/commands/entityaddcomponent');
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
@@ -119,6 +126,8 @@ handler.AddHandler(new LinkExit('Link Exit'))
 handler.AddHandler(new CreateEntity('Entity Create'))
 handler.AddHandler(new DescribeEntity('Entity Describe'))
 handler.AddHandler(new CreateMobile('Mobile Create'))
+handler.AddHandler(new MobileAddComponent('Mobile Add Component'))
+handler.AddHandler(new EntityAddComponent('Entity Add Component'))
 
 // Load data files if there are any.
 function loadData () {
@@ -198,13 +207,13 @@ loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceed
       console.log('Listening on http://localhost:8080');
       let saveData = require('./lib/data').save
       
-      setInterval(() => saveData(true, true, true).then(() => console.log('Autosave complete.')), require('./lib/config.json').autosaveTimeout)
+      setInterval(() => saveData(true, true, true).then(() => console.log('Autosave complete.')), config.autosaveTimeout)
       
       setInterval(() => {
         let mobs = entities.mobiles()
         for (let m in mobs) {
           mobs[m].Update()
         }
-      })
+      }, config.mobilesTimeout)
 
     }))
