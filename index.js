@@ -109,6 +109,7 @@ const CreateMobile = require('./lib/commands/createmobile');
 const MobileAddComponent = require('./lib/commands/mobileaddcomponent');
 const EntityAddComponent = require('./lib/commands/entityaddcomponent');
 const RemoveEntity = require('./lib/commands/removeentity');
+const RoomAddComponent = require('./lib/commands/roomaddcomponent');
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
@@ -130,6 +131,7 @@ handler.AddHandler(new CreateMobile('Mobile Create'))
 handler.AddHandler(new MobileAddComponent('Mobile Add Component'))
 handler.AddHandler(new EntityAddComponent('Entity Add Component'))
 handler.AddHandler(new RemoveEntity('Entity Remove'))
+handler.AddHandler(new RoomAddComponent('Add Component'))
 
 // Load data files if there are any.
 function loadData () {
