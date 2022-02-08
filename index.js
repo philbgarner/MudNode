@@ -111,6 +111,7 @@ const EntityAddComponent = require('./lib/commands/entityaddcomponent');
 const RemoveEntity = require('./lib/commands/removeentity');
 const RoomAddComponent = require('./lib/commands/roomaddcomponent');
 const NameRoom = require('./lib/commands/nameroom');
+const RoomComponentProps = require('./lib/commands/roomcomponentprops');
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
@@ -119,6 +120,7 @@ handler.AddHandler(new ListRooms('Room List'))
 handler.AddHandler(new CreateRoom('Room Create'))
 handler.AddHandler(new DescribeRoom('Room Describe'))
 handler.AddHandler(new RoomAddComponent('Room Add Component'))
+handler.AddHandler(new RoomComponentProps('Room Component Props'))
 handler.AddHandler(new NameRoom('Room Name'))
 handler.AddHandler(new Save('Save'))
 handler.AddHandler(new Reload('Reload'))
