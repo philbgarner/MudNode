@@ -110,6 +110,7 @@ const MobileAddComponent = require('./lib/commands/mobileaddcomponent');
 const EntityAddComponent = require('./lib/commands/entityaddcomponent');
 const RemoveEntity = require('./lib/commands/removeentity');
 const RoomAddComponent = require('./lib/commands/roomaddcomponent');
+const NameRoom = require('./lib/commands/nameroom');
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
@@ -117,9 +118,8 @@ handler.AddHandler(new Tp('Tp'))
 handler.AddHandler(new ListRooms('Room List'))
 handler.AddHandler(new CreateRoom('Room Create'))
 handler.AddHandler(new DescribeRoom('Room Describe'))
-handler.AddHandler(new DescribeMe('Me Describe'))
-handler.AddHandler(new NameMe('Me Name'))
-handler.AddHandler(new Me('Me'))
+handler.AddHandler(new RoomAddComponent('Room Add Component'))
+handler.AddHandler(new NameRoom('Room Name'))
 handler.AddHandler(new Save('Save'))
 handler.AddHandler(new Reload('Reload'))
 handler.AddHandler(new ListPlayers('List Players'))
@@ -131,7 +131,9 @@ handler.AddHandler(new CreateMobile('Mobile Create'))
 handler.AddHandler(new MobileAddComponent('Mobile Add Component'))
 handler.AddHandler(new EntityAddComponent('Entity Add Component'))
 handler.AddHandler(new RemoveEntity('Entity Remove'))
-handler.AddHandler(new RoomAddComponent('Add Component'))
+handler.AddHandler(new DescribeMe('Me Describe'))
+handler.AddHandler(new NameMe('Me Name'))
+handler.AddHandler(new Me('Me'))
 
 // Load data files if there are any.
 function loadData () {

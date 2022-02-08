@@ -4,6 +4,8 @@
     "roomsfile": "rooms.json",
     "usersfile": "users.json",
     "mobilesfile": "mobiles.json",
+    "indentamt": 2,
     "autosaveTimeout": 60000,
+
     "mobilesTimeout": 2000
 }
