@@ -217,7 +217,7 @@ loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceed
       console.log('Listening on http://localhost:8080');
       let saveData = require('./lib/data').save
       
-      setInterval(() => saveData(true, true, true).then(() => console.log('Autosave complete.')), config.autosaveTimeout)
+      setInterval(() => saveData(true, true, true, true, true).then(() => console.log('Autosave complete.')), config.autosaveTimeout)
       
       setInterval(() => {
         let mobs = entities.mobiles()
