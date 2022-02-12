@@ -208,6 +208,11 @@ wss.on('connection', function (ws, request) {
   });
 });
 
+// Template Test
+let MixedForestArea = require('./lib/templates/areas/MixedForestArea')
+let mixedArea = new MixedForestArea({ template: 'MixedForest' })
+mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z:0 })
+
 //
 // Load data and then start the server.
 //
