@@ -43,9 +43,33 @@
           top: 5vh;
           left: 35vw;
         }
+
+        #minimap {
+          display: none;
+        }
+        #minimap.showmap {
+          background-color: white;
+          display: block !important;
+          position: absolute;
+          width: 25vw;
+          height: 25vh;
+          top: 5vh;
+          left: 65vw;
+        }
+
+        #minimap > canvas {
+          width: 60%;
+          height: 60%;
+        }
       </style>
   </head>
   <body>
+    <div id="minimap">
+      <canvas id="minimapcanvas"></canvas>
+      <button id="closemap" type="button" title="Close">
+        Done
+      </button>
+    </div>
     <div id="loginpanel">
       <h1>Login</h1>
       <input type='text' id='username' />

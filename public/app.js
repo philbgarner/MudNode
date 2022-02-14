@@ -16,13 +16,21 @@
     const regusername = document.querySelector('#regusername')
     const regpassword = document.getElementById('regpassw')
 
-    toggleLoginPanel()
+    const miniMap = document.getElementById('minimap')
 
     function toggleLoginPanel() {
       if (loginPanel.classList.contains('showlogin')) {
         loginPanel.classList.remove('showlogin')
       } else {
         loginPanel.classList.add('showlogin')
+      }
+    }
+
+    function toggleMinimap() {
+      if (miniMap.classList.contains('showmap')) {
+        miniMap.classList.remove('showmap')
+      } else {
+        miniMap.classList.add('showmap')
       }
     }
 
@@ -132,6 +140,9 @@
         command.value = ''
       }
     })
+
+    toggleLoginPanel()
+    //toggleMinimap()
 
   })()
   
