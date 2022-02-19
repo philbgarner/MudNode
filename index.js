@@ -9,6 +9,7 @@ const WebSocket = require('ws');
 const app = express();
 const users = require('./lib/users')
 const entities = require('./lib/entities')
+const rooms = require('./lib/rooms')
 
 //
 // Load config info
@@ -223,7 +224,14 @@ loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceed
       let saveData = require('./lib/data').save
       
       setInterval(() => saveData(true, true, true, true, true).then(() => console.log('Autosave complete.')), config.autosaveTimeout)
-      
+
+      setInterval(() => {
+        let rs = rooms.rooms()
+        for (let r in rs) {
+          rs[r].Update()
+        }
+      }, config.roomsTimeout)
+
       setInterval(() => {
         let mobs = entities.mobiles()
         for (let m in mobs) {

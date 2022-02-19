@@ -8,5 +8,6 @@
     "indentamt": 2,
     "autosaveTimeout": 60000,
 
-    "mobilesTimeout": 2000
+    "mobilesTimeout": 2000,
+    "roomsTimeout": 10000
 }
