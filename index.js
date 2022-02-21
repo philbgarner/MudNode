@@ -10,6 +10,7 @@ const app = express();
 const users = require('./lib/users')
 const entities = require('./lib/entities')
 const rooms = require('./lib/rooms')
+const MobileSpawner = require('./lib/components/mobilespawner')
 
 //
 // Load config info
@@ -213,6 +214,13 @@ wss.on('connection', function (ws, request) {
 let MixedForestArea = require('./lib/templates/areas/MixedForestArea')
 let mixedArea = new MixedForestArea({ template: 'MixedForest' })
 mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2)
+
+let rm = rooms.getRoomByLocation({x: 0, y: 0, z: 0})
+// rm.components.push(new Delayed({ parent: rm.uuid, delay: 60, OnEnd: (room) => {
+//   console.log('Delayed (wind).', JSON.stringify(room.location))
+//   room.SendMessage('The wind rustles the leaves')
+// }}))
+rm.components.push(new MobileSpawner({ mobile: 'rat', parent: rm.uuid }))
 
 //
 // Load data and then start the server.
