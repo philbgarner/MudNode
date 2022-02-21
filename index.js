@@ -211,16 +211,15 @@ wss.on('connection', function (ws, request) {
 });
 
 // Template Test
-let MixedForestArea = require('./lib/templates/areas/MixedForestArea')
+const MixedForestArea = require('./lib/templates/areas/MixedForestArea');
+const HamletArea = require('./lib/templates/areas/HamletArea');
 let mixedArea = new MixedForestArea({ template: 'MixedForest' })
-mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2)
-
-let rm = rooms.getRoomByLocation({x: 0, y: 0, z: 0})
-// rm.components.push(new Delayed({ parent: rm.uuid, delay: 60, OnEnd: (room) => {
-//   console.log('Delayed (wind).', JSON.stringify(room.location))
-//   room.SendMessage('The wind rustles the leaves')
-// }}))
-rm.components.push(new MobileSpawner({ mobile: 'rat', parent: rm.uuid }))
+mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2).then((area) => {
+  let hamletArea = new HamletArea({ template: 'HamletStreet' })
+  return hamletArea.GenerateRooms('HamletStreet', { x: 2, y: 0, z: 2 }, 2).then((area) => {
+    console.log('Area rooms created:', area.Rooms().length)
+  })
+})
 
 //
 // Load data and then start the server.
