@@ -213,13 +213,20 @@ wss.on('connection', function (ws, request) {
 // Template Test
 const MixedForestArea = require('./lib/templates/areas/MixedForestArea');
 const HamletArea = require('./lib/templates/areas/HamletArea');
+const RoadArea = require('./lib/templates/areas/RoadArea');
 let mixedArea = new MixedForestArea({ template: 'MixedForest' })
+let area1
 mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2).then((area) => {
   let hamletArea = new HamletArea({ template: 'HamletStreet' })
-  return hamletArea.GenerateRooms('HamletStreet', { x: 2, y: 0, z: 2 }, 2).then((area) => {
-    console.log('Area rooms created:', area.Rooms().length)
-  })
+  area1 = area
+  return hamletArea.GenerateRooms('HamletStreet', { x: 8, y: 0, z: 8 }, 3)
 })
+.then((area) => {
+  let roadArea = new RoadArea({ template: 'HamletStreet' })
+  roadArea.startLocation = area1.FurthestPoint('East')
+  roadArea.endLocation = area.FurthestPoint('West')
+  return roadArea.GenerateRooms()
+}).then((area) => console.log(area.Rooms()))
 
 //
 // Load data and then start the server.
