@@ -20,7 +20,7 @@ import Player from './lib/player.js'
 //
 // Load config info
 //
-import config from './lib/config.json'
+import config from './lib/config.js'
 
 //
 // We need the same instance of the session parser in express and
