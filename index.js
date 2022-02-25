@@ -1,21 +1,26 @@
-const session = require('express-session');
-const express = require('express');
-const http = require('http');
-const uuid = require('uuid');
-const bodyParser = require('body-parser')
+import session from 'express-session'
+import express from 'express'
 
-const WebSocket = require('ws');
+import http from 'http'
+import uuid from 'uuid'
+import bodyParser from 'body-parser'
+import WebSocket from 'ws'
 
 const app = express();
-const users = require('./lib/users')
-const entities = require('./lib/entities')
-const rooms = require('./lib/rooms')
-const MobileSpawner = require('./lib/components/mobilespawner')
+
+import users from './lib/users'
+import entities from './lib/entities'
+import rooms from './lib/rooms'
+import data from './lib/data'
+
+import User from './lib/user'
+import Handler from './lib/handler'
+import Player from './lib/player'
 
 //
 // Load config info
 //
-const config = require('./lib/config.json')
+import config from './lib/config.json'
 
 //
 // We need the same instance of the session parser in express and
@@ -38,7 +43,7 @@ app.post('/login', function (req, res) {
   //
   // "Log in" user and set userId to session.
   //
-  let user = require('./lib/users').getUser(req.body.username)
+  let user = users.getUser(req.body.username)
   if (user !== null) {
     if (user.password === req.body.password) {
       req.session.userId = user.uuid
@@ -56,11 +61,9 @@ app.post('/register', function (req, res) {
   }
 
   const id = uuid.v4();
-  let User = require('./lib/user').user
   let user = new User(id, req.body.username, req.body.password)
   users.addUser(user)
   res.send({ok: true, message: `User ${user.username} created.`})
-  let data = require('./lib/data')
   data.save(false, false, true)
 })
 
@@ -79,42 +82,39 @@ app.delete('/logout', function (request, response) {
 const server = http.createServer(app);
 
 // Initiate MUD Entity lists and handlers
-const welcome = require('./lib/welcome')
+import welcome from './lib/welcome'
 
-const Handler = require('./lib/handler')
-const Player = require('./lib/player')
-
-const addPlayer = require('./lib/entities').addPlayer
-const removePlayer = require('./lib/entities').removePlayer
+const addPlayer = entities.addPlayer
+const removePlayer = entities.removePlayer
 
 //
 // Handle Event Registrations
 //
 var handler = new Handler()
 
-const Look = require('./lib/commands/look')
-const CreateRoom = require('./lib/commands/createroom')
-const ListRooms = require('./lib/commands/listrooms')
-const LinkExit = require('./lib/commands/linkexit');
-const Tp = require('./lib/commands/tp');
-const DescribeRoom = require('./lib/commands/describeroom');
-const DescribeMe = require('./lib/commands/describeme');
-const Me = require('./lib/commands/me');
-const Save = require('./lib/commands/save');
-const Reload = require('./lib/commands/load');
-const ListPlayers = require('./lib/commands/listplayers');
-const Impersonate = require('./lib/commands/impersonate');
-const CreateEntity = require('./lib/commands/createentity');
-const NameMe = require('./lib/commands/NameMe')
-const DescribeEntity = require('./lib/commands/describeentity');
-const CreateMobile = require('./lib/commands/createmobile');
-const MobileAddComponent = require('./lib/commands/mobileaddcomponent');
-const EntityAddComponent = require('./lib/commands/entityaddcomponent');
-const RemoveEntity = require('./lib/commands/removeentity');
-const RoomAddComponent = require('./lib/commands/roomaddcomponent');
-const NameRoom = require('./lib/commands/nameroom');
-const RoomComponentProps = require('./lib/commands/roomcomponentprops');
-const DigRoom = require('./lib/commands/digroom')
+import Look from './lib/commands/look'
+import CreateRoom from './lib/commands/createroom'
+import ListRooms from './lib/commands/listrooms'
+import LinkExit from './lib/commands/linkexit'
+import Tp from './lib/commands/tp'
+import DescribeRoom from './lib/commands/describeroom'
+import DescribeMe from './lib/commands/describeme'
+import Me from './lib/commands/me'
+import Save from './lib/commands/save'
+import Reload from './lib/commands/load'
+import ListPlayers from './lib/commands/listplayers'
+import Impersonate from './lib/commands/impersonate'
+import CreateEntity from './lib/commands/createentity'
+import NameMe from './lib/commands/NameMe'
+import DescribeEntity from './lib/commands/describeentity'
+import CreateMobile from './lib/commands/createmobile'
+import MobileAddComponent from './lib/commands/mobileaddcomponent'
+import EntityAddComponent from './lib/commands/entityaddcomponent'
+import RemoveEntity from './lib/commands/removeentity'
+import RoomAddComponent from './lib/commands/roomaddcomponent'
+import NameRoom from './lib/commands/nameroom'
+import RoomComponentProps from './lib/commands/roomcomponentprops'
+import DigRoom from './lib/commands/digroom'
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
@@ -145,7 +145,7 @@ handler.AddHandler(new Me('Me'))
 function loadData () {
   console.log('Loading data files...')
   return new Promise((resolve, reject) => {
-    require('./lib/data').load().then(() => {
+    data.load().then(() => {
       console.log('Data load complete!')
       resolve()
     }).catch(() => {
@@ -177,9 +177,8 @@ server.on('upgrade', function (request, socket, head) {
 wss.on('connection', function (ws, request) {
   const userId = request.session.userId;
   users.setUserWs(userId, ws)
-  const players = require('./lib/entities')
   let newPlayer = false
-  let player = players.getPlayer(userId)
+  let player = entities.players.getPlayer(userId)
   if (player === null) {
     player = new Player({ uuid: userId, name: 'Spirit', description: 'A formless spirit.' })
     newPlayer = true
@@ -211,22 +210,15 @@ wss.on('connection', function (ws, request) {
 });
 
 // Template Test
-const MixedForestArea = require('./lib/templates/areas/MixedForestArea');
-const HamletArea = require('./lib/templates/areas/HamletArea');
-const RoadArea = require('./lib/templates/areas/RoadArea');
+import MixedForestArea from './lib/templates/areas/MixedForestArea'
+import HamletArea from './lib/templates/areas/HamletArea'
 let mixedArea = new MixedForestArea({ template: 'MixedForest' })
 let area1
-mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2).then((area) => {
+let area2
+mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2).then((area1) => {
   let hamletArea = new HamletArea({ template: 'HamletStreet' })
-  area1 = area
   return hamletArea.GenerateRooms('HamletStreet', { x: 8, y: 0, z: 8 }, 3)
-})
-.then((area) => {
-  let roadArea = new RoadArea({ template: 'HamletStreet' })
-  roadArea.startLocation = area1.FurthestPoint('East')
-  roadArea.endLocation = area.FurthestPoint('West')
-  return roadArea.GenerateRooms()
-}).then((area) => console.log(area.Rooms()))
+})//.then((area) => area1.RoadTo(area))
 
 //
 // Load data and then start the server.
@@ -235,7 +227,7 @@ loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceed
   .finally(() =>
     server.listen(8080, function () {
       console.log('Listening on http://localhost:8080');
-      let saveData = require('./lib/data').save
+      let saveData = data.save
       
       setInterval(() => saveData(true, true, true, true, true).then(() => console.log('Autosave complete.')), config.autosaveTimeout)
 
