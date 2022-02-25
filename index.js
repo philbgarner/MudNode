@@ -8,14 +8,14 @@ import WebSocket from 'ws'
 
 const app = express();
 
-import users from './lib/users'
-import entities from './lib/entities'
-import rooms from './lib/rooms'
-import data from './lib/data'
+import users from './lib/users.js'
+import entities from './lib/entities.js'
+import rooms from './lib/rooms.js'
+import data from './lib/data.js'
 
-import User from './lib/user'
-import Handler from './lib/handler'
-import Player from './lib/player'
+import User from './lib/user.js'
+import Handler from './lib/handler.js'
+import Player from './lib/player.js'
 
 //
 // Load config info
@@ -82,7 +82,7 @@ app.delete('/logout', function (request, response) {
 const server = http.createServer(app);
 
 // Initiate MUD Entity lists and handlers
-import welcome from './lib/welcome'
+import welcome from './lib/welcome.js'
 
 const addPlayer = entities.addPlayer
 const removePlayer = entities.removePlayer
@@ -92,29 +92,29 @@ const removePlayer = entities.removePlayer
 //
 var handler = new Handler()
 
-import Look from './lib/commands/look'
-import CreateRoom from './lib/commands/createroom'
-import ListRooms from './lib/commands/listrooms'
-import LinkExit from './lib/commands/linkexit'
-import Tp from './lib/commands/tp'
-import DescribeRoom from './lib/commands/describeroom'
-import DescribeMe from './lib/commands/describeme'
-import Me from './lib/commands/me'
-import Save from './lib/commands/save'
-import Reload from './lib/commands/load'
-import ListPlayers from './lib/commands/listplayers'
-import Impersonate from './lib/commands/impersonate'
-import CreateEntity from './lib/commands/createentity'
-import NameMe from './lib/commands/NameMe'
-import DescribeEntity from './lib/commands/describeentity'
-import CreateMobile from './lib/commands/createmobile'
-import MobileAddComponent from './lib/commands/mobileaddcomponent'
-import EntityAddComponent from './lib/commands/entityaddcomponent'
-import RemoveEntity from './lib/commands/removeentity'
-import RoomAddComponent from './lib/commands/roomaddcomponent'
-import NameRoom from './lib/commands/nameroom'
-import RoomComponentProps from './lib/commands/roomcomponentprops'
-import DigRoom from './lib/commands/digroom'
+import Look from './lib/commands/look.js'
+import CreateRoom from './lib/commands/createroom.js'
+import ListRooms from './lib/commands/listrooms.js'
+import LinkExit from './lib/commands/linkexit.js'
+import Tp from './lib/commands/tp.js'
+import DescribeRoom from './lib/commands/describeroom.js'
+import DescribeMe from './lib/commands/describeme.js'
+import Me from './lib/commands/me.js'
+import Save from './lib/commands/save.js'
+import Reload from './lib/commands/load.js'
+import ListPlayers from './lib/commands/listplayers.js'
+import Impersonate from './lib/commands/impersonate.js'
+import CreateEntity from './lib/commands/createentity.js'
+import NameMe from './lib/commands/nameme.js'
+import DescribeEntity from './lib/commands/describeentity.js'
+import CreateMobile from './lib/commands/createmobile.js'
+import MobileAddComponent from './lib/commands/mobileaddcomponent.js'
+import EntityAddComponent from './lib/commands/entityaddcomponent.js'
+import RemoveEntity from './lib/commands/removeentity.js'
+import RoomAddComponent from './lib/commands/roomaddcomponent.js'
+import NameRoom from './lib/commands/nameroom.js'
+import RoomComponentProps from './lib/commands/roomcomponentprops.js'
+import DigRoom from './lib/commands/digroom.js'
 
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
@@ -210,8 +210,8 @@ wss.on('connection', function (ws, request) {
 });
 
 // Template Test
-import MixedForestArea from './lib/templates/areas/MixedForestArea'
-import HamletArea from './lib/templates/areas/HamletArea'
+import MixedForestArea from './lib/templates/areas/MixedForestArea.js'
+import HamletArea from './lib/templates/areas/HamletArea.js'
 let mixedArea = new MixedForestArea({ template: 'MixedForest' })
 let area1
 let area2
