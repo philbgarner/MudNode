@@ -2,7 +2,7 @@ import session from 'express-session'
 import express from 'express'
 
 import http from 'http'
-import uuid from 'uuid'
+import { v4 } from 'uuid'
 import bodyParser from 'body-parser'
 import WebSocket from 'ws'
 
@@ -60,7 +60,7 @@ app.post('/register', function (req, res) {
     return
   }
 
-  const id = uuid.v4();
+  const id = v4();
   let user = new User(id, req.body.username, req.body.password)
   users.addUser(user)
   res.send({ok: true, message: `User ${user.username} created.`})
