@@ -6,13 +6,18 @@ import { v4 } from 'uuid'
 import bodyParser from 'body-parser'
 import { WebSocketServer } from 'ws'
 
-import { entities } from './lib/mudnode.js'
+import { entities, data, config, users, rooms,
+  Handler, Look, CreateRoom, ListRooms, LinkExit, Tp, DescribeRoom, DescribeMe,
+  Me, Save, Reload, ListPlayers, Impersonate, CreateEntity, CreateMobile,
+  MobileAddComponent, EntityAddComponent, RemoveEntity, RoomAddComponent,
+  NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe
+} from './lib/mudnode.js'
 
 const app = express();
 //
 // Load config info
 //
-import config from './lib/config.js'
+const configData = config.loadConfig()
 
 //
 // We need the same instance of the session parser in express and
@@ -72,9 +77,6 @@ app.delete('/logout', function (request, response) {
 // Create an HTTP server.
 //
 const server = http.createServer(app);
-
-// Initiate MUD Entity lists and handlers
-import welcome from './lib/welcome.js'
 
 const addPlayer = entities.addPlayer
 const removePlayer = entities.removePlayer
@@ -146,7 +148,7 @@ wss.on('connection', function (ws, request) {
   const userId = request.session.userId;
   users.setUserWs(userId, ws)
   let newPlayer = false
-  let player = entities.players.getPlayer(userId)
+  let player = entities.getPlayer(userId)
   if (player === null) {
     player = new Player({ uuid: userId, name: 'Spirit', description: 'A formless spirit.' })
     newPlayer = true
@@ -154,7 +156,11 @@ wss.on('connection', function (ws, request) {
   } 
     
   // Send the welcome message when the user connects.
-  welcome.send(ws)
+  ws.send("\n\r=============================================================================")
+  ws.send("Welcome to ws-mud!")
+  ws.send("This is an experiment in making a web sockets, browser based node implementation of a M.U.D. system.")
+  ws.send("TODO: Move this to an external config so it's easily updatable, make a command to modify in-game.")
+  ws.send("\n\r")
 
   if (!newPlayer) {
     ws.send(`Welcome back ${player.name}!`)
@@ -186,20 +192,20 @@ loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceed
       console.log('Listening on http://localhost:8080');
       let saveData = data.save
       
-      setInterval(() => saveData(true, true, true, true, true).then(() => console.log('Autosave complete.')), config.autosaveTimeout)
+      setInterval(() => saveData(true, true, true, true, true).then(() => console.log('Autosave complete.')), configData.autosaveTimeout)
 
       setInterval(() => {
-        let rs = rooms.rooms()
+        let rs = rooms.getRooms()
         for (let r in rs) {
           rs[r].Update()
         }
-      }, config.roomsTimeout)
+      }, configData.roomsTimeout)
 
       setInterval(() => {
         let mobs = entities.mobiles()
         for (let m in mobs) {
           mobs[m].Update()
         }
-      }, config.mobilesTimeout)
+      }, configData.mobilesTimeout)
 
     }))
