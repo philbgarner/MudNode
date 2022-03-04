@@ -4,19 +4,11 @@ import express from 'express'
 import http from 'http'
 import { v4 } from 'uuid'
 import bodyParser from 'body-parser'
-import WebSocket from 'ws'
+import { WebSocketServer } from 'ws'
+
+import { entities } from './lib/mudnode.js'
 
 const app = express();
-
-import users from './lib/users.js'
-import entities from './lib/entities.js'
-import rooms from './lib/rooms.js'
-import data from './lib/data.js'
-
-import User from './lib/user.js'
-import Handler from './lib/handler.js'
-import Player from './lib/player.js'
-
 //
 // Load config info
 //
@@ -92,30 +84,6 @@ const removePlayer = entities.removePlayer
 //
 var handler = new Handler()
 
-import Look from './lib/commands/look.js'
-import CreateRoom from './lib/commands/createroom.js'
-import ListRooms from './lib/commands/listrooms.js'
-import LinkExit from './lib/commands/linkexit.js'
-import Tp from './lib/commands/tp.js'
-import DescribeRoom from './lib/commands/describeroom.js'
-import DescribeMe from './lib/commands/describeme.js'
-import Me from './lib/commands/me.js'
-import Save from './lib/commands/save.js'
-import Reload from './lib/commands/load.js'
-import ListPlayers from './lib/commands/listplayers.js'
-import Impersonate from './lib/commands/impersonate.js'
-import CreateEntity from './lib/commands/createentity.js'
-import NameMe from './lib/commands/nameme.js'
-import DescribeEntity from './lib/commands/describeentity.js'
-import CreateMobile from './lib/commands/createmobile.js'
-import MobileAddComponent from './lib/commands/mobileaddcomponent.js'
-import EntityAddComponent from './lib/commands/entityaddcomponent.js'
-import RemoveEntity from './lib/commands/removeentity.js'
-import RoomAddComponent from './lib/commands/roomaddcomponent.js'
-import NameRoom from './lib/commands/nameroom.js'
-import RoomComponentProps from './lib/commands/roomcomponentprops.js'
-import DigRoom from './lib/commands/digroom.js'
-
 handler.AddHandler(new Look('Look'))
 handler.AddHandler(new LinkExit('Link Exit'))
 handler.AddHandler(new Tp('Tp'))
@@ -158,7 +126,7 @@ function loadData () {
 //
 // Create a WebSocket server completely detached from the HTTP server.
 //
-const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
+const wss = new WebSocketServer({ clientTracking: false, noServer: true });
 
 server.on('upgrade', function (request, socket, head) {
   sessionParser(request, {}, () => {
@@ -208,17 +176,6 @@ wss.on('connection', function (ws, request) {
     removePlayer(userId)
   });
 });
-
-// Template Test
-import MixedForestArea from './lib/templates/areas/MixedForestArea.js'
-import HamletArea from './lib/templates/areas/HamletArea.js'
-let mixedArea = new MixedForestArea({ template: 'MixedForest' })
-let area1
-let area2
-mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2).then((area1) => {
-  let hamletArea = new HamletArea({ template: 'HamletStreet' })
-  return hamletArea.GenerateRooms('HamletStreet', { x: 8, y: 0, z: 8 }, 3)
-})//.then((area) => area1.RoadTo(area))
 
 //
 // Load data and then start the server.

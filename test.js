@@ -1,1 +1,2 @@
-import Room from './lib/room.js'
+import { Mobile } from './lib/mudnode.js'
+const e = new Mobile()
