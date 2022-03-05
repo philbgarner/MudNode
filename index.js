@@ -10,7 +10,8 @@ import { entities, data, config, users, rooms,
   Handler, Look, CreateRoom, ListRooms, LinkExit, Tp, DescribeRoom, DescribeMe,
   Me, Save, Reload, ListPlayers, Impersonate, CreateEntity, CreateMobile,
   MobileAddComponent, EntityAddComponent, RemoveEntity, RoomAddComponent,
-  NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe
+  NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe,
+  MixedForestArea
 } from './lib/mudnode.js'
 
 const app = express();
@@ -182,6 +183,11 @@ wss.on('connection', function (ws, request) {
     removePlayer(userId)
   });
 });
+
+let mixedArea = new MixedForestArea({ template: 'MixedForest' })
+mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2).then((area) => {
+  console.log(area)
+})
 
 //
 // Load data and then start the server.
