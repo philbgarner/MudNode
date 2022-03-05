@@ -11,7 +11,7 @@ import { entities, data, config, users, rooms,
   Me, Save, Reload, ListPlayers, Impersonate, CreateEntity, CreateMobile,
   MobileAddComponent, EntityAddComponent, RemoveEntity, RoomAddComponent,
   NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe,
-  MixedForestArea
+  MixedForestArea, HamletArea, RoadArea
 } from './lib/mudnode.js'
 
 const app = express();
@@ -185,9 +185,18 @@ wss.on('connection', function (ws, request) {
 });
 
 let mixedArea = new MixedForestArea({ template: 'MixedForest' })
-mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 2).then((area) => {
-  console.log(area)
-})
+
+let startArea
+mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 3).then((area) => {
+  startArea = area
+  let hamletArea = new HamletArea({ template: 'HamletStreet' })
+  return hamletArea.GenerateRooms('HamletStreet', { x: 5, y: 0, z: 5 }, 3)
+}).then((area) => {
+  let roadArea = new RoadArea({ template: 'HamletStreet' })
+  roadArea.startLocation = startArea.FurthestPoint('East')
+  roadArea.endLocation = area.FurthestPoint('West')
+  return roadArea.GenerateRooms()
+}).then((area) => console.log('Areas generated.'))
 
 //
 // Load data and then start the server.
