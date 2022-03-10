@@ -4,7 +4,7 @@
   "description": "WebSocket MUD server experiment.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "type": "module",
   "author": "Phil B. Garner",
@@ -13,6 +13,7 @@
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
     "express-session": "^1.17.2",
+    "jest": "^27.5.1",
     "require": "^2.4.20",
     "uuid": "^8.3.2",
     "ws": "^8.4.2"
