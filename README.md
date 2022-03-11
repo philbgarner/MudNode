@@ -11,3 +11,7 @@ It will automatically download and install any NPM packages required to run MudN
 ## Running MudNode
 
 Once NPM package dependencies are installed, you can run it with `node index.js`.  This will start the server back-end and also serve the front-end client on localhost:8080.  Direct your browser to http://localhost:8080/ and register your username to begin.
+
+## Discord Server
+
+https://discord.gg/EHtHGnGjtJ

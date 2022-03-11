@@ -11,7 +11,7 @@ import { entities, data, config, users, rooms,
   Me, Save, Reload, ListPlayers, Impersonate, CreateEntity, CreateMobile,
   MobileAddComponent, EntityAddComponent, RemoveEntity, RoomAddComponent,
   NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe,
-  MixedForestArea, HamletArea, RoadArea
+  MixedForestArea, HamletArea, RoadArea, grammar
 } from './lib/mudnode.js'
 
 const app = express();
@@ -183,6 +183,15 @@ wss.on('connection', function (ws, request) {
     removePlayer(userId)
   });
 });
+
+/**
+ * Example of the grammar processor.
+ */
+// grammar.set('Greeting', '[*Hello], [*friend].')
+// grammar.set('Hello', ['Greetings', 'Hello', 'Hi', '[*Extended Hello]'])
+// grammar.set('friend', ['buddy', 'friend', 'pal'])
+// grammar.set('Extended Hello', [`Such a pleasure to make your acquaintance`, `I'm delighted to meet you`])
+// console.log(grammar.text('[*Greeting]'))
 
 let mixedArea = new MixedForestArea({ template: 'MixedForest' })
 
