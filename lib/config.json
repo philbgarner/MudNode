@@ -5,6 +5,8 @@
     "usersfile": "users.json",
     "mobilesfile": "mobiles.json",
     "areasfile": "areas.json",
+    "grammarfile": "grammar.json",
+
     "indentamt": 2,
     "autosaveTimeout": 60000,
 
