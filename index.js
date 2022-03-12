@@ -184,15 +184,6 @@ wss.on('connection', function (ws, request) {
   });
 });
 
-/**
- * Example of the grammar processor.
- */
-// grammar.set('Greeting', '[*Hello], [*friend].')
-// grammar.set('Hello', ['Greetings', 'Hello', 'Hi', '[*Extended Hello]'])
-// grammar.set('friend', ['buddy', 'friend', 'pal'])
-// grammar.set('Extended Hello', [`Such a pleasure to make your acquaintance`, `I'm delighted to meet you`])
-// console.log(grammar.text('[*Greeting]'))
-
 let mixedArea = new MixedForestArea({ template: 'MixedForest', descriptionTemplate: '[*Default Room]' })
 grammar.set('Default Room', ['Default room description, change the descriptionTemplate parameter.', 'Default two.', 'Default three.'])
 let startArea
