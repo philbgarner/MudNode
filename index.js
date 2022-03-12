@@ -193,15 +193,15 @@ wss.on('connection', function (ws, request) {
 // grammar.set('Extended Hello', [`Such a pleasure to make your acquaintance`, `I'm delighted to meet you`])
 // console.log(grammar.text('[*Greeting]'))
 
-let mixedArea = new MixedForestArea({ template: 'MixedForest' })
-
+let mixedArea = new MixedForestArea({ template: 'MixedForest', descriptionTemplate: '[*Default Room]' })
+grammar.set('Default Room', ['Default room description, change the descriptionTemplate parameter.', 'Default two.', 'Default three.'])
 let startArea
 mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 3).then((area) => {
   startArea = area
-  let hamletArea = new HamletArea({ template: 'HamletStreet' })
+  let hamletArea = new HamletArea({ template: 'HamletStreet', descriptionTemplate: '[*Default Room]' })
   return hamletArea.GenerateRooms('HamletStreet', { x: 5, y: 0, z: 5 }, 3)
 }).then((area) => {
-  let roadArea = new RoadArea({ template: 'HamletStreet' })
+  let roadArea = new RoadArea({ template: 'HamletStreet', descriptionTemplate: '[*Default Room]' })
   roadArea.startLocation = startArea.FurthestPoint('East')
   roadArea.endLocation = area.FurthestPoint('West')
   return roadArea.GenerateRooms()
