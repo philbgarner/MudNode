@@ -62,7 +62,7 @@ app.post('/register', function (req, res) {
   let user = new User(id, req.body.username, req.body.password)
   users.addUser(user)
   res.send({ok: true, message: `User ${user.username} created.`})
-  data.save(false, false, true)
+  data.save({ saveusers: true })
 })
 
 app.delete('/logout', function (request, response) {
