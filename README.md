@@ -38,6 +38,8 @@ Hi, friend.
 Such a pleasure to make your acquaintance, pal.
 ```
 
+A more detailed documentation of the grammar module is [available here](GRAMMAR.md).
+
 ## Discord Server
 
 https://discord.gg/EHtHGnGjtJ
