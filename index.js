@@ -184,19 +184,19 @@ wss.on('connection', function (ws, request) {
   });
 });
 
-let mixedArea = new MixedForestArea({ template: 'MixedForest', descriptionTemplate: '[*Default Room]' })
-grammar.set('Default Room', ['Default room description, change the descriptionTemplate parameter.', 'Default two.', 'Default three.'])
-let startArea
-mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 3).then((area) => {
-  startArea = area
-  let hamletArea = new HamletArea({ template: 'HamletStreet', descriptionTemplate: '[*Default Room]' })
-  return hamletArea.GenerateRooms('HamletStreet', { x: 5, y: 0, z: 5 }, 3)
-}).then((area) => {
-  let roadArea = new RoadArea({ template: 'HamletStreet', descriptionTemplate: '[*Default Room]' })
-  roadArea.startLocation = startArea.FurthestPoint('East')
-  roadArea.endLocation = area.FurthestPoint('West')
-  return roadArea.GenerateRooms()
-}).then((area) => console.log('Areas generated.'))
+// let mixedArea = new MixedForestArea({ template: 'MixedForest', descriptionTemplate: '[*Default Room]' })
+// grammar.set('Default Room', ['Default room description, change the descriptionTemplate parameter.', 'Default two.', 'Default three.'])
+// let startArea
+// mixedArea.GenerateRooms('MixedForest', { x: 0, y: 0, z: 0 }, 3).then((area) => {
+//   startArea = area
+//   let hamletArea = new HamletArea({ template: 'HamletStreet', descriptionTemplate: '[*Default Room]' })
+//   return hamletArea.GenerateRooms('HamletStreet', { x: 5, y: 0, z: 5 }, 3)
+// }).then((area) => {
+//   let roadArea = new RoadArea({ template: 'HamletStreet', descriptionTemplate: '[*Default Room]' })
+//   roadArea.startLocation = startArea.FurthestPoint('East')
+//   roadArea.endLocation = area.FurthestPoint('West')
+//   return roadArea.GenerateRooms()
+// }).then((area) => console.log('Areas generated.'))
 
 //
 // Load data and then start the server.

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MudNode</title>
+    <style type="text/css">
+        body {
+            background-color: black;
+        }
+
+        div.container {
+            display: flex;
+            flex-flow: row wrap;
+            width: 80vw;
+        }
+
+        #template {
+            background-color: darkslategray;
+            min-height: 5em;
+            max-height: 25em;
+            padding: 0.5em;
+            flex: 20em;
+            font-family: 'Lucida Console';
+            color: ivory;
+        }
+
+        button {
+            flex: 1em;
+            max-width: 8em;
+            max-height: 2em;
+        }
+
+        span.token_open {
+          background-color: blue;
+          color: white;
+          font-weight: bold;
+        }
+        span.token_close {
+          background-color: blue;
+          color: white;
+          font-weight: bold;
+        }
+        span.token {
+          background-color: blue;
+          color: yellow;
+          font-weight: bold;
+        }
+        #suggestions {
+          background-color: blue;
+          color: white;
+          font-weight: 100;
+          position: absolute;
+          top: 10em;
+          left: 10em;
+          display: none;
+          min-width: 10em;
+          min-height: 3em;
+          font-family: 'Lucida Console';
+          font-size: 1em;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <div id="template" contenteditable="true"></div>
+        <button id="idprocess" type="button" title="Process Template into Text">Process</button>
+    </div>
+    <div id="suggestions"></div>
+    <script src="designer.js"></script>
+  </body>
+</html>
