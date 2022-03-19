@@ -56,7 +56,6 @@
     }
 
     var editor = null;
-    var output = null;
     
     const getTextSelection = function (editor) {
         const selection = window.getSelection();
@@ -175,12 +174,19 @@
         return null
     }
 
+    const saveDictionary = () => {
+        return fetch('http://localhost:8080/dictionary', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dictionary: dictionary }) })
+    }
+
     const refreshDictionary = () => {
 
-        const addKeyValueEl = (text, onChange) => {
+        const addKeyValueEl = (text, onChange, onBlur) => {
             let val = document.createElement('li')
             let p = document.createElement('p')
             p.addEventListener('input', (e) => onChange(e))
+            if (onBlur) {
+                p.addEventListener('blur', (e) => onBlur(e))
+            }
             p.contentEditable = true
             p.innerText = text
             val.appendChild(p)
@@ -212,7 +218,13 @@
                 addValue.addEventListener('click', () => {
                     let newIndex = dictionary[keys[k]].length
                     dictionary[keys[k]][newIndex] = ''
-                    addKeyValueEl('', (e) => dictionary[keys[k]][newIndex] = e.target.innerText)
+                    addKeyValueEl('', (e) => dictionary[keys[k]][newIndex] = e.target.innerText, (e) => {
+                        saveDictionary().catch(e => {
+                            console.log('Error: ', e)
+                        }).then((response) => {
+                            refreshDictionary()
+                        })            
+                    })
                     dValues.appendChild(addValue)
                 })
                 dValues.appendChild(addValue)
@@ -227,12 +239,21 @@
         let key = prompt('New Dictionary Key:', '')
         if (key) {
             dictionary[key] = [key]
-            refreshDictionary()
-        }
+            saveDictionary().catch(e => {
+                console.log('Error: ', e)
+            }).then((response) => {
+                refreshDictionary()
+            })            
+}
     })
 
     document.addEventListener('selectionchange', handleSelectionChange);    
+
+    // Load initial dictionary data.
     fetch('http://localhost:8080/dictionary', { method: 'POST' }).then((response) => {
         return response.json()
-    }).then((data) => dictionary = data)
+    }).then((data) => {
+        dictionary = data
+        refreshDictionary()
+    })
 })()

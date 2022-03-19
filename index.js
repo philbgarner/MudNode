@@ -38,6 +38,13 @@ app.use(sessionParser);
 app.use(bodyParser.json())
 
 app.post('/dictionary', (req, res) => {
+  console.log(req.body)
+  if (req.body.dictionary) {
+    grammar.setDictionary(req.body.dictionary)
+    data.save()
+    res.status(200)
+    return
+  }
   res.send(grammar.dictionary)
 })
 
