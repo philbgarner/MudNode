@@ -37,6 +37,10 @@ app.use(express.static('public'));
 app.use(sessionParser);
 app.use(bodyParser.json())
 
+app.post('/dictionary', (req, res) => {
+  res.send(grammar.dictionary)
+})
+
 app.post('/login', function (req, res) {
   //
   // "Log in" user and set userId to session.

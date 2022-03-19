@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>MudNode</title>
+    <title>MudNode Designer</title>
     <style type="text/css">
         body {
             background-color: black;
@@ -13,7 +13,7 @@
             width: 80vw;
         }
 
-        #template {
+        .editor {
             background-color: darkslategray;
             min-height: 5em;
             max-height: 25em;
@@ -57,12 +57,106 @@
           font-family: 'Lucida Console';
           font-size: 1em;
         }
+        #output {
+          flex: 1em;
+          background-color: grey;
+          min-height: 2em;
+          max-height: 5em;
+          padding: 0.5em;
+          max-width: 80vh;
+          font-family: 'Lucida Console';
+          font-size: 10pt;
+          margin: 0.25em;
+        }
+        #dictionary {
+          display: flex;
+          flex-flow: row wrap;
+          background-color: darkslateblue;
+          min-height: 10em;
+          max-height: 25em;
+          padding: 0.5em;
+          font-family: 'Lucida Console';
+          font-size: 10pt;
+          margin: 0.25em;
+        }
+        #dictionary > div {
+          flex: 50%;
+        }
+        #dictionary ul {
+          min-height: 100%;
+          margin: 0.05em;
+          flex: 1;
+          border: 1px darkgrey;
+          border-style: solid;
+          border-top-style: none;
+          border-bottom-style: none;
+        }
+        #dictionary ul > li {
+          list-style-type: none;
+          padding: 0.25em;
+          margin: 0.1em;
+          background-color: rgba(0, 0, 0, 0.1);
+          border-radius: 0.25em;
+          min-height: 1em;
+        }
+        #dcontainer {
+          padding: 0.5em;
+          background-color: darkslateblue;
+          max-width: 80vh;
+          border-radius: 0.25em;
+          font-family: 'Lucida Console';
+        }
+        #dictionary p {
+          color: #fff;
+          width: 100%;
+          display: inline-block;
+          height: 100%;
+          border: none;
+          padding: 0;
+          margin: 0;
+        }
+        h1, h2, h3, h4 {
+          color: white;
+        }
+        #dKeys { 
+          list-style-type: none;
+          margin: 0.1em;
+          padding: 0.25em;
+          color: #fff;
+        }
+        #dKeys > li {
+          cursor: pointer;
+        }
+        #dValues {
+          list-style-type: none;
+          margin: 0.1em;
+          padding: 0.25em;
+          color: #fff;
+        }
+        .selected-key {
+          background-color: #f1f1f1 !important;
+          color: black;
+        }
     </style>
   </head>
   <body>
     <div class="container">
-        <div id="template" contenteditable="true"></div>
+        <p id="template" class="editor" contenteditable="true"></p>
         <button id="idprocess" type="button" title="Process Template into Text">Process</button>
+    </div>
+    <div id="dcontainer">
+      <h4>Dictionary</h4>
+      <div id="dictionary">
+        <div>
+          <ul id="dKeys">
+          </ul>
+        </div>
+        <div>
+          <ul id="dValues">
+          </ul>
+        </div>
+      </div>
+      <button id="addKey" onclick="">Add</button><button id="removeKey">Remove</button><button id="editKey">Rename</button>
     </div>
     <div id="suggestions"></div>
     <script src="designer.js"></script>
