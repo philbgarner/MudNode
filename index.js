@@ -37,6 +37,15 @@ app.use(express.static('public'));
 app.use(sessionParser);
 app.use(bodyParser.json())
 
+app.post('/process', (req, res) => {
+  console.log(req.body, typeof req.body.template)
+  if (req.body.template && typeof req.body.template === 'string') {
+    res.send(grammar.text(req.body.template))
+    return
+  }
+  res.send(500)
+})
+
 app.post('/dictionary', (req, res) => {
   if (req.body.dictionary) {
     grammar.setDictionary(req.body.dictionary)

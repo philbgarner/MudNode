@@ -4,6 +4,7 @@
     const dValues = document.getElementById("dValues")
     const btnAddKey = document.getElementById("addKey")
     const btnRemoveKey = document.getElementById("removeKey")
+    const btnProcess = document.getElementById("idprocess")
     
     var selectedKey = ''
 
@@ -105,7 +106,7 @@
     }
     
     const getWordAt = (str, pos) => {
-        if (str.length === 0) {
+        if (str.length === 0 || pos < 0) {
             return ''
         }
 
@@ -115,12 +116,14 @@
     
         // Search for the word's beginning and end.
         var left = 0
-        for (let p = pos; p >= 0; p--) {
-            if (str[p] === '[') {
-                left = p
-                break
-            } else if (str[p] === ']') {
-                return ''
+        if (pos > 0) {
+            for (let p = pos; p >= 0; p--) {
+                if (str[p] === '[') {
+                    left = p
+                    break
+                } else if (str[p] === ']') {
+                    return ''
+                }
             }
         }
 
@@ -269,6 +272,12 @@
                 refreshDictionary(key)
             })            
         }
+    })
+
+    btnProcess.addEventListener('click', () => {
+        fetch('http://localhost:8080/process', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ template: template.innerText })}).then((response) => {
+            console.log(response)
+        })
     })
 
     document.addEventListener('selectionchange', handleSelectionChange);    
