@@ -3,6 +3,7 @@
     const dKeys = document.getElementById("dKeys")
     const dValues = document.getElementById("dValues")
     const btnAddKey = document.getElementById("addKey")
+    const btnRemoveKey = document.getElementById("removeKey")
     
     var selectedKey = ''
 
@@ -178,7 +179,9 @@
         return fetch('http://localhost:8080/dictionary', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dictionary: dictionary }) })
     }
 
-    const refreshDictionary = () => {
+    const refreshDictionary = (selected) => {
+        
+        selectedKey = selected ? selected : selectedKey
 
         const addKeyValueEl = (text, onChange, onBlur) => {
             let val = document.createElement('li')
@@ -194,6 +197,7 @@
         }
 
         dKeys.innerHTML = ''
+        dValues.innerHTML = ''
         let keys = Object.keys(dictionary)
         for (let k in keys) {
             let key = document.createElement('li')
@@ -231,9 +235,29 @@
             })
             dKeys.appendChild(key)
         }
+        if (currentKey()) {
+            currentKey().dispatchEvent(new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          }))
+        }
     }
 
     editor = document.querySelector('.editor');
+
+    btnRemoveKey.addEventListener('click', () => {
+        let key = currentKey().innerText
+        if (key) {
+            dictionary[key] = undefined
+            delete dictionary[key]
+            saveDictionary().catch(e => {
+                console.log('Error: ', e)
+            }).then((response) => {
+                refreshDictionary()
+            })            
+        }
+    })
 
     btnAddKey.addEventListener('click', () => {
         let key = prompt('New Dictionary Key:', '')
@@ -242,9 +266,9 @@
             saveDictionary().catch(e => {
                 console.log('Error: ', e)
             }).then((response) => {
-                refreshDictionary()
+                refreshDictionary(key)
             })            
-}
+        }
     })
 
     document.addEventListener('selectionchange', handleSelectionChange);    
