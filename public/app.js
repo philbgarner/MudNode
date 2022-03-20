@@ -1,6 +1,5 @@
 (function () {
     const messages = document.querySelector('#messages')
-    const wsButton = document.querySelector('#wsButton')
     const wsSendButton = document.querySelector('#wsSendButton')
     //const logout = document.querySelector('#logout')
     const login = document.querySelector('#login')
@@ -15,6 +14,8 @@
     const password = document.getElementById('passw')
     const regusername = document.querySelector('#regusername')
     const regpassword = document.getElementById('regpassw')
+
+    const ofield = document.getElementById('ofield')
 
     const miniMap = document.getElementById('minimap')
 

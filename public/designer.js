@@ -5,6 +5,7 @@
     const btnAddKey = document.getElementById("addKey")
     const btnRemoveKey = document.getElementById("removeKey")
     const btnProcess = document.getElementById("idprocess")
+    const ofield = document.getElementById("ofield")
     
     var selectedKey = ''
 
@@ -276,7 +277,7 @@
 
     btnProcess.addEventListener('click', () => {
         fetch('http://localhost:8080/process', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ template: template.innerText })}).then((response) => {
-            console.log(response)
+            response.text().then((v) => ofield.innerText = v)
         })
     })
 

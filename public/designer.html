@@ -94,6 +94,17 @@
           max-width: 95vw;
           border-radius: 0.25em;
           font-family: 'Lucida Console';
+          margin: 0.25em;
+        }
+        .container > div {
+          background-color: dimgray;
+        }
+        .container > div > input {
+          max-width: 2em;
+        }
+        .container > div > button {
+          min-width: 100%;
+          min-height: 5em;
         }
         #dictionary p {
           color: #fff;
@@ -126,12 +137,36 @@
           background-color: #f1f1f1 !important;
           color: black;
         }
+
+        #ocontainer {
+          padding: 0.5em;
+          background-color: lightslategrey;
+          max-width: 95vw;
+          border-radius: 0.25em;
+          font-family: 'Lucida Console';
+          font-size: 10pt;
+          min-height: 3em;
+          margin: 0.25em;
+        }
+
+        #ofield {
+          font-family: 'Lucida Console';
+          color: rgb(50, 50, 50);
+        }
+
     </style>
   </head>
   <body>
     <div class="container">
-        <p id="template" class="editor" contenteditable="true"></p>
-        <button id="idprocess" type="button" title="Process Template into Text">Process</button>
+      <p id="template" class="editor" contenteditable="true"></p>
+      <div>
+        <button id="idprocess" type="button" title="Process Template into Text">Process</button><br/>
+        Output <input type="text" value="5"> examples.
+      </div>
+    </div>
+    <div id="ocontainer">
+      <h4>Output</h4>
+      <pre id="ofield"></pre>
     </div>
     <div id="dcontainer">
       <h4>Dictionary</h4>
