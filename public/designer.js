@@ -193,6 +193,7 @@
             p.addEventListener('input', (e) => onChange(e))
             if (onBlur) {
                 p.addEventListener('blur', (e) => onBlur(e))
+                p.addEventListener('focus', (e) => e.target.setAttribute('oldval', p.innerText))
             }
             p.contentEditable = true
             p.innerText = text
@@ -217,7 +218,22 @@
                 key.classList.add('selected-key')
                 dValues.innerHTML = ''
                 for (let v in dictionary[keys[k]]) {
-                    addKeyValueEl(dictionary[keys[k]][v], (e) => dictionary[keys[k]][v] = e.target.innerText)
+                    addKeyValueEl(dictionary[keys[k]][v], (e) => dictionary[keys[k]][v] = e.target.innerText, (val) => {
+                        dictionary[keys[k]][v] = val.target.innerText
+                        saveDictionary().catch(e => {
+                            console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
+                            dictionary[keys[k]][v] = val.target.getAttribute('oldval')
+                            val.target.innerText = val.target.getAttribute('oldval')
+                            e.target.removeAttribute('oldval')
+                        }).then(e => {
+                            if (!e.ok) {
+                                console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
+                                val.target.innerText = val.target.getAttribute('oldval')
+                                dictionary[keys[k]][v] = val.target.getAttribute('oldval')
+                            }
+                            val.target.removeAttribute('oldval')
+                        })
+                    })
                 }
                 let addValue = document.createElement('input')
                 addValue.type = 'button'
@@ -226,12 +242,21 @@
                 addValue.addEventListener('click', () => {
                     let newIndex = dictionary[keys[k]].length
                     dictionary[keys[k]][newIndex] = ''
-                    addKeyValueEl('', (e) => dictionary[keys[k]][newIndex] = e.target.innerText, (e) => {
+                    addKeyValueEl('', (e) => dictionary[keys[k]][newIndex] = e.target.innerText, (val) => {
+                        dictionary[keys[k]][v] = val.target.innerText
                         saveDictionary().catch(e => {
-                            console.log('Error: ', e)
-                        }).then((response) => {
-                            refreshDictionary()
-                        })            
+                            console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
+                            dictionary[keys[k]][v] = val.target.getAttribute('oldval')
+                            val.target.innerText = val.target.getAttribute('oldval')
+                            e.target.removeAttribute('oldval')
+                        }).then(e => {
+                            if (!e.ok) {
+                                console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
+                                val.target.innerText = val.target.getAttribute('oldval')
+                                dictionary[keys[k]][v] = val.target.getAttribute('oldval')
+                            }
+                            val.target.removeAttribute('oldval')
+                        })
                     })
                     dValues.appendChild(addValue)
                 })
