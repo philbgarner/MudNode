@@ -183,26 +183,8 @@
         return fetch('http://localhost:8080/dictionary', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dictionary: dictionary }) })
     }
 
-    const refreshDictionary = (selected) => {
-        
+    const refreshKeys = (selected) => {
         selectedKey = selected ? selected : selectedKey
-
-        const addKeyValueEl = (text, onChange, onBlur) => {
-            let val = document.createElement('li')
-            let p = document.createElement('p')
-            p.addEventListener('input', (e) => onChange(e))
-            if (onBlur) {
-                p.addEventListener('blur', (e) => onBlur(e))
-                p.addEventListener('focus', (e) => e.target.setAttribute('oldval', p.innerText))
-            }
-            p.contentEditable = true
-            p.innerText = text
-            val.appendChild(p)
-            dValues.appendChild(val)
-        }
-
-        dKeys.innerHTML = ''
-        dValues.innerHTML = ''
         let keys = Object.keys(dictionary)
         for (let k in keys) {
             let key = document.createElement('li')
@@ -216,54 +198,13 @@
                     selectedKey.classList.remove('selected-key')
                 }
                 key.classList.add('selected-key')
-                dValues.innerHTML = ''
-                for (let v in dictionary[keys[k]]) {
-                    addKeyValueEl(dictionary[keys[k]][v], (e) => dictionary[keys[k]][v] = e.target.innerText, (val) => {
-                        dictionary[keys[k]][v] = val.target.innerText
-                        saveDictionary().catch(e => {
-                            console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
-                            dictionary[keys[k]][v] = val.target.getAttribute('oldval')
-                            val.target.innerText = val.target.getAttribute('oldval')
-                            e.target.removeAttribute('oldval')
-                        }).then(e => {
-                            if (!e.ok) {
-                                console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
-                                val.target.innerText = val.target.getAttribute('oldval')
-                                dictionary[keys[k]][v] = val.target.getAttribute('oldval')
-                            }
-                            val.target.removeAttribute('oldval')
-                        })
-                    })
-                }
-                let addValue = document.createElement('input')
-                addValue.type = 'button'
-                addValue.value = '+'
-                addValue.title = `Add new potential value to the array stored in dictionary key "${keys[k]}".`
-                addValue.addEventListener('click', () => {
-                    let newIndex = dictionary[keys[k]].length
-                    dictionary[keys[k]][newIndex] = ''
-                    addKeyValueEl('', (e) => dictionary[keys[k]][newIndex] = e.target.innerText, (val) => {
-                        dictionary[keys[k]][v] = val.target.innerText
-                        saveDictionary().catch(e => {
-                            console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
-                            dictionary[keys[k]][v] = val.target.getAttribute('oldval')
-                            val.target.innerText = val.target.getAttribute('oldval')
-                            e.target.removeAttribute('oldval')
-                        }).then(e => {
-                            if (!e.ok) {
-                                console.log(`Error editing value for key '${keys[k]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
-                                val.target.innerText = val.target.getAttribute('oldval')
-                                dictionary[keys[k]][v] = val.target.getAttribute('oldval')
-                            }
-                            val.target.removeAttribute('oldval')
-                        })
-                    })
-                    dValues.appendChild(addValue)
-                })
-                dValues.appendChild(addValue)
+                selectedKey = currentKey()
+
+                refreshValues(selected, 0)                
             })
             dKeys.appendChild(key)
         }
+
         if (currentKey()) {
             currentKey().dispatchEvent(new MouseEvent('click', {
             view: window,
@@ -271,6 +212,74 @@
             cancelable: true
           }))
         }
+    }
+
+    const refreshValues = (key, index) => {
+        selectedKey = key ? key : selectedKey
+        selected = selectedKey.innerText
+        dValues.innerHTML = ''
+        let selEl = null
+        for (let v in dictionary[selected]) {
+            let el = addKeyValueEl(dictionary[selected][v], (e) => dictionary[selected][v] = e.target.innerText, (val) => {
+                dictionary[selected][v] = val.target.innerText
+                saveDictionary().catch(e => {
+                    console.log(`Error editing value for key '${keys[selected]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
+                    dictionary[selected][v] = val.target.getAttribute('oldval')
+                    val.target.innerText = val.target.getAttribute('oldval')
+                    e.target.removeAttribute('oldval')
+                }).then(e => {
+                    if (!e.ok) {
+                        console.log(`Error editing value for key '${keys[selected]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
+                        val.target.innerText = val.target.getAttribute('oldval')
+                        dictionary[selected][v] = val.target.getAttribute('oldval')
+                    }
+                    val.target.removeAttribute('oldval')
+                })
+            })
+            if (index === parseInt(v)) {
+                selEl = el
+            }
+        }
+        let addValue = document.createElement('input')
+        addValue.type = 'button'
+        addValue.value = 'Add'
+        addValue.title = `Add new potential value to the array stored in dictionary key "${selected}".`
+        
+        let removeValue = document.createElement('input')
+        removeValue.type = 'button'
+        removeValue.value = 'Remove'
+        removeValue.title - `Remove selected value from the array for dictionary key "${selected}".`
+
+        addValue.addEventListener('click', () => {
+            let newIndex = dictionary[selected].length
+            dictionary[selected][newIndex] = ''
+            refreshValues(currentKey(), newIndex)
+        })
+
+        if (selEl) {
+            selEl.focus()
+        }
+        dValues.appendChild(addValue)
+        dValues.appendChild(removeValue)
+    }
+
+    const addKeyValueEl = (text, onChange, onBlur) => {
+        let val = document.createElement('li')
+        let p = document.createElement('p')
+        p.addEventListener('input', (e) => onChange(e))
+        if (onBlur) {
+            p.addEventListener('blur', (e) => onBlur(e))
+            p.addEventListener('focus', (e) => e.target.setAttribute('oldval', p.innerText))
+        }
+        p.contentEditable = true
+        p.innerText = text
+        val.appendChild(p)
+        dValues.appendChild(val)
+        return p
+    }
+
+    const refreshDictionary = (selected) => {        
+        refreshKeys(selected)
     }
 
     editor = document.querySelector('.editor');
