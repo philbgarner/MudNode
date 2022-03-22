@@ -6,6 +6,7 @@
     const btnRemoveKey = document.getElementById("removeKey")
     const btnProcess = document.getElementById("idprocess")
     const ofield = document.getElementById("ofield")
+    const filterKeys = document.getElementById("filterKeys")
     
     var selectedKey = ''
 
@@ -193,8 +194,10 @@
     const refreshKeys = (selected) => {
         selectedKey = selected ? selected : selectedKey
         let keys = Object.keys(dictionary)
+        dKeys.innerHTML = ''
         for (let k in keys) {
-            let key = document.createElement('li')
+            let key
+            key = document.createElement('li')
             key.innerText = keys[k]
             if (key.innerText === selectedKey) {
                 key.classList.add('selected-key')
@@ -209,7 +212,11 @@
 
                 refreshValues(selected, 0)                
             })
-            dKeys.appendChild(key)
+            if (filterKeys.value.length > 0 && key.innerText.includes(filterKeys.value)) {
+                dKeys.appendChild(key)
+            } else if (filterKeys.value.length === 0) {
+                dKeys.appendChild(key)
+            }
         }
 
         if (currentKey()) {
@@ -225,6 +232,9 @@
         selectedKey = key ? key : selectedKey
         selected = selectedKey.innerText
         dValues.innerHTML = ''
+        if (selectedKey.length === 0) {
+            return
+        }
         let selEl = null
         for (let v in dictionary[selected]) {
             let el = addKeyValueEl(dictionary[selected][v], (e) => {
@@ -328,7 +338,8 @@
             saveDictionary().catch(e => {
                 console.log('Error: ', e)
             }).then((response) => {
-                refreshDictionary()
+                refreshKeys()
+                dValues.innerHTML = ''
             })            
         }
     })
@@ -336,13 +347,20 @@
     btnAddKey.addEventListener('click', () => {
         let key = prompt('New Dictionary Key:', '')
         if (key) {
-            dictionary[key] = [key]
+            dictionary[key] = ['']
             saveDictionary().catch(e => {
                 console.log('Error: ', e)
             }).then((response) => {
-                refreshDictionary(key)
+                //refreshDictionary(key)
+                refreshKeys(key)
             })            
         }
+    })
+
+    filterKeys.addEventListener('input', (e) => {
+        selectedKey = ''
+        refreshKeys()
+        refreshValues()
     })
 
     btnProcess.addEventListener('click', () => {

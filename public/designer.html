@@ -71,6 +71,9 @@
         #dictionary > div {
           padding: 1em;
         }
+        #dictionary > div:first-child {
+          min-width: 30vw;
+        }
         #dictionary ul {
           min-height: 100%;
           margin: 0.05em;
@@ -95,6 +98,16 @@
           border-radius: 0.25em;
           font-family: 'Lucida Console';
           margin: 0.25em;
+        }
+        #dcontainer > input {
+          background-color: darkslateblue;
+          border: none;
+          border-bottom: 1px solid white;
+          color: lightgrey;
+          outline: 0;
+        }
+        #dcontainer > h4 {
+          display: inline-block;
         }
         .container > div {
           padding: 1em;
@@ -133,6 +146,8 @@
           margin: 0.1em;
           padding: 0.25em;
           color: #fff;
+          min-width: 50vw;
+          max-width: 55vw;
         }
         .selected-key {
           background-color: #f1f1f1 !important;
@@ -159,6 +174,25 @@
           color: #111;
         }
 
+        #worldmap {
+          padding: 0.5em;
+          background-color: darkslateblue;
+          max-width: 95vw;
+          max-height: 60vh;
+          border-radius: 0.25em;
+          font-family: 'Lucida Console';
+          margin: 0.25em;
+          display: flex;
+        }
+        #worldmap > div {
+          flex: 1
+        }
+        #worldmap > div > canvas {
+          background-color: darkgrey;
+          width: 40vw;
+          height: 40vh;
+        }
+
     </style>
   </head>
   <body>
@@ -173,7 +207,7 @@
       <pre id="ofield"></pre>
     </div>
     <div id="dcontainer">
-      <h4>Dictionary</h4>
+      <h4>Dictionary</h4> <input type="text" id="filterKeys" value="" title="Search Keys"/>
       <div id="dictionary">
         <div>
           <ul id="dKeys">
@@ -185,6 +219,16 @@
         </div>
       </div>
       <button id="addKey" onclick="">Add</button><button id="removeKey">Remove</button><button id="editKey">Rename</button>
+    </div>
+    <div id="worldmap">
+      <div>
+        <h4>Room</h4>
+
+      </div>
+      <div>
+        <h4>Map</h4>
+        <canvas></canvas>
+      </div>
     </div>
     <div id="suggestions"></div>
     <script src="designer.js"></script>
