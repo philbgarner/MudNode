@@ -69,7 +69,7 @@
           margin: 0.25em;
         }
         #dictionary > div {
-          flex: 50%;
+          padding: 1em;
         }
         #dictionary ul {
           min-height: 100%;
@@ -82,7 +82,7 @@
         }
         #dictionary ul > li {
           list-style-type: none;
-          padding: 0.25em;
+          padding: 0.5em;
           margin: 0.1em;
           background-color: rgba(0, 0, 0, 0.1);
           border-radius: 0.25em;
@@ -97,7 +97,8 @@
           margin: 0.25em;
         }
         .container > div {
-          background-color: dimgray;
+          padding: 1em;
+          min-width: 10em;
         }
         .container > div > input {
           max-width: 2em;
@@ -137,6 +138,10 @@
           background-color: #f1f1f1 !important;
           color: black;
         }
+        .selected-value {
+          border-color: #f1f1f1a9 !important;
+          border-style: dotted;
+        }
 
         #ocontainer {
           padding: 0.5em;
@@ -161,7 +166,6 @@
       <p id="template" class="editor" contenteditable="true"></p>
       <div>
         <button id="idprocess" type="button" title="Process Template into Text">Process</button><br/>
-        Output <input type="text" value="5"> examples.
       </div>
     </div>
     <div id="ocontainer">

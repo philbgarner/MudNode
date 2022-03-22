@@ -148,7 +148,6 @@
                 const selection = text.slice(textSelection.start, textSelection.end);
                 const prevChar = text.slice(textSelection.start - 1, textSelection.start)
                 const word = getWordAt(text, textSelection.start - 1)
-                console.log('>', word)
                 if (prevChar === '[') {
                     toggleSuggestions({ type: 'Token Types:', data: ['* = Key Search', '? = Condition'] }, false)
                 } else if (word.includes('[*') && !word.includes(']')) {
@@ -175,6 +174,14 @@
         let keys = document.getElementsByClassName('selected-key')
         if (keys.length === 1) {
             return keys[0]
+        }
+        return null
+    }
+
+    const currentValue = () => {
+        let vals = document.getElementsByClassName('selected-value')
+        if (vals.length === 1) {
+            return vals[0]
         }
         return null
     }
@@ -220,8 +227,11 @@
         dValues.innerHTML = ''
         let selEl = null
         for (let v in dictionary[selected]) {
-            let el = addKeyValueEl(dictionary[selected][v], (e) => dictionary[selected][v] = e.target.innerText, (val) => {
-                dictionary[selected][v] = val.target.innerText
+            let el = addKeyValueEl(dictionary[selected][v], (e) => {
+                dictionary[selected][v] = e.target.innerText.slice(-1) === '\n' ? e.target.innerText.slice(0, e.target.innerText.length - 1) : e.target.innerText
+            },
+            (val) => {
+                dictionary[selected][v] = val.target.innerText.slice(-1) === '\n' ? val.target.innerText.slice(0, val.target.innerText.length - 1) : val.target.innerText
                 saveDictionary().catch(e => {
                     console.log(`Error editing value for key '${keys[selected]}', revering to '${val.target.getAttribute('oldval')}'.`, e)
                     dictionary[selected][v] = val.target.getAttribute('oldval')
@@ -250,6 +260,25 @@
         removeValue.value = 'Remove'
         removeValue.title - `Remove selected value from the array for dictionary key "${selected}".`
 
+        removeValue.addEventListener('click', () => {
+            for (var c in dValues.children) {
+                let child = dValues.children[c]
+                if (child.nodeName === 'LI') {
+                    if (child.childNodes[0].classList.contains('selected-value')) {
+                        console.log('deleting', c, dictionary[selected])
+                        dictionary[selected] = [...dictionary[selected].slice(0, c), ...dictionary[selected].slice(c + 1)]
+                        console.log('deleted', c, dictionary[selected])
+                        c--;
+                        if (c < 0) {
+                            c = 0
+                        }
+                        break;
+                    }
+                }
+            }
+            refreshValues(currentKey(), c) 
+        })
+
         addValue.addEventListener('click', () => {
             let newIndex = dictionary[selected].length
             dictionary[selected][newIndex] = ''
@@ -269,7 +298,14 @@
         p.addEventListener('input', (e) => onChange(e))
         if (onBlur) {
             p.addEventListener('blur', (e) => onBlur(e))
-            p.addEventListener('focus', (e) => e.target.setAttribute('oldval', p.innerText))
+            p.addEventListener('focus', (e) => {
+                let val = currentValue()
+                if (val) {
+                    val.classList.remove('selected-value')
+                }
+                e.target.setAttribute('oldval', p.innerText)
+                e.target.classList.add('selected-value')
+            })
         }
         p.contentEditable = true
         p.innerText = text
@@ -311,7 +347,7 @@
 
     btnProcess.addEventListener('click', () => {
         fetch('http://localhost:8080/process', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ template: template.innerText })}).then((response) => {
-            response.text().then((v) => ofield.innerText = v)
+            response.text().then((v) => ofield.innerText += v + '\n')
         })
     })
 
