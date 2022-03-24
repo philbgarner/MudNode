@@ -11,6 +11,7 @@ import { entities, data, config, users, rooms,
   Me, Save, Reload, ListPlayers, Impersonate, CreateEntity, CreateMobile,
   MobileAddComponent, EntityAddComponent, RemoveEntity, RoomAddComponent,
   NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe,
+  Room,
   MixedForestArea, HamletArea, RoadArea, grammar
 } from './lib/mudnode.js'
 
@@ -54,6 +55,24 @@ app.post('/dictionary', (req, res) => {
     return
   }
   res.send(grammar.dictionary)
+})
+
+app.post('/room', (req, res) => {
+  let room = new Room()
+  rooms.addRoom(room)
+  data.save()
+  res.send(JSON.stringify(room))
+})
+
+
+app.post('/rooms', (req, res) => {
+  if (req.body.rooms) {
+    rooms.setRooms(req.body.rooms)
+    data.save()
+    res.status(200).send()
+    return
+  }
+  res.send(JSON.stringify(rooms.getRooms()))
 })
 
 app.post('/login', function (req, res) {
@@ -226,7 +245,7 @@ loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceed
       console.log('Listening on http://localhost:8080');
       let saveData = data.save
       
-      setInterval(() => saveData(true, true, true, true, true).then(() => console.log('Autosave complete.')), configData.autosaveTimeout)
+      setInterval(() => saveData().then(() => console.log('Autosave complete.')), configData.autosaveTimeout)
 
       setInterval(() => {
         let rs = rooms.getRooms()

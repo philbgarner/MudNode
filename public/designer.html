@@ -15,8 +15,9 @@
 
         .editor {
             background-color: darkslategray;
-            min-height: 5em;
+            min-height: 1em;
             max-height: 25em;
+            max-width: 90%;
             padding: 0.5em;
             flex: 20em;
             font-family: 'Lucida Console';
@@ -193,6 +194,16 @@
           height: 40vh;
         }
 
+        #rcontainer {
+          display: flex;
+          flex-direction: column;
+          font-size: 10pt;
+        }
+        #rcontainer > div, #rcontainer > p {
+          flex: 1 !important;
+          margin: 0.1em;
+        }
+
     </style>
   </head>
   <body>
@@ -223,7 +234,16 @@
     <div id="worldmap">
       <div>
         <h4>Room</h4>
-
+        <div id="rcontainer">
+          <div>id:</div><p id="room_id" class="editor"></p>
+          <div>name:</div><p id="room_name" class="editor" contenteditable="true"></p></p>
+          <div>description:</div><p id="room_description" class="editor" contenteditable="true"></p></p>
+          <div>location:</div><p id="room_location"></p>
+          <ul id="roomslist"></ul>
+        </div>
+        <div>
+          <input type="button" value="Add Room" id="addRoom" />
+        </div>
       </div>
       <div>
         <h4>Map</h4>

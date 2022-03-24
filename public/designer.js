@@ -7,10 +7,16 @@
     const btnProcess = document.getElementById("idprocess")
     const ofield = document.getElementById("ofield")
     const filterKeys = document.getElementById("filterKeys")
-    
+    const worldmap = document.getElementById("worldmap")
+    const rooms = document.getElementById("roomslist")
+    const rcontainer = document.getElementById("rcontainer")
+    const addRoom = document.getElementById("addRoom")
+
     var selectedKey = ''
+    var selectedRoom = ''
 
     var dictionary = {}
+    var roomslist = {}
 
     var suggestion = {
         type: '',
@@ -185,6 +191,10 @@
             return vals[0]
         }
         return null
+    }
+
+    const currentRoom = () => {
+        return roomslist[selectedRoom] ? roomslist[selectedRoom] : null
     }
 
     const saveDictionary = () => {
@@ -367,12 +377,51 @@
         fetch('http://localhost:8080/process', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ template: template.innerText })}).then((response) => {
             response.text().then((v) => ofield.innerText += v + '\n')
         })
+    })   
+    
+    const refreshRoomsList = (selected) => {
+        selectedRoom = selected ? selected : selectedRoom
+        rooms.innerHTML = ''        
+        let addRoom = document.getElementById("addRoom")
+        addRoom.addEventListener('click', (e) => {
+            fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }}).then((response) => response.json())
+                .then((data) => {
+                    selectedRoom = data.uuid
+                    refreshRoomsList()
+                })
+        })
+
+        let room = currentRoom()
+        if (room) {
+            rcontainer.querySelector('#room_id').innerText = room.uuid
+            rcontainer.querySelector('#room_name').innerText = room.name
+            rcontainer.querySelector('#room_description').innerText = room.description
+            rcontainer.querySelector('#room_location').innerText = JSON.stringify(room.location)
+        }
+
+        for (let r in roomslist) {
+            let el = document.createElement('li')
+            el.innerText = roomslist[r].name + ' ' + roomslist[r].location
+            el.addEventListener('click', (e) => {
+                selectedRoom = r
+                refreshRoomsList(r)
+            })
+            rooms.appendChild(el)
+        }
+    }
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+
+    // Load initial rooms list.
+    fetch('http://localhost:8080/rooms', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).then((response) => {
+        return response.json()
+    }).then((data) => {
+        roomslist = data
+        refreshRoomsList()
     })
 
-    document.addEventListener('selectionchange', handleSelectionChange);    
-
     // Load initial dictionary data.
-    fetch('http://localhost:8080/dictionary', { method: 'POST' }).then((response) => {
+    fetch('http://localhost:8080/dictionary', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).then((response) => {
         return response.json()
     }).then((data) => {
         dictionary = data
