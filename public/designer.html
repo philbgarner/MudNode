@@ -24,6 +24,10 @@
             color: ivory;
         }
 
+        .multirow {
+          min-height: 5em;
+        }
+
         button {
             flex: 1em;
             max-width: 8em;
@@ -237,7 +241,7 @@
         <div id="rcontainer">
           <div>id:</div><p id="room_id" class="editor"></p>
           <div>name:</div><p id="room_name" class="editor" contenteditable="true"></p></p>
-          <div>description:</div><p id="room_description" class="editor" contenteditable="true"></p></p>
+          <div>description:</div><p id="room_description" class="editor multirow" contenteditable="true"></p></p>
           <div>location:</div><p id="room_location"></p>
           <ul id="roomslist"></ul>
         </div>
@@ -247,7 +251,7 @@
       </div>
       <div>
         <h4>Map</h4>
-        <canvas></canvas>
+        <canvas id="canvas"></canvas>
       </div>
     </div>
     <div id="suggestions"></div>

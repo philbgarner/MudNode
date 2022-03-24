@@ -59,9 +59,12 @@ app.post('/dictionary', (req, res) => {
 
 app.post('/room', (req, res) => {
   let room = new Room()
-  rooms.addRoom(room)
-  data.save()
-  res.send(JSON.stringify(room))
+  if (rooms.addRoom(room)) {
+    data.save()
+    res.send(JSON.stringify(room))
+  } else {
+    res.status(500).send(`Error: Room at location ${JSON.stringify(room.location)} already exists.`)
+  }
 })
 
 

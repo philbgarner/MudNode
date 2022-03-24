@@ -11,9 +11,16 @@
     const rooms = document.getElementById("roomslist")
     const rcontainer = document.getElementById("rcontainer")
     const addRoom = document.getElementById("addRoom")
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    var mapScale = 10
+    var mapOffset = { x: () => parseInt(canvas.width / 2), y: () => parseInt(canvas.height / 2) }
+    //var mapOffset = { x: 1, y: 1 }
 
     var selectedKey = ''
     var selectedRoom = ''
+    var selectedCell = { selected: false, x: 0, y: 0 }
 
     var dictionary = {}
     var roomslist = {}
@@ -378,11 +385,53 @@
             response.text().then((v) => ofield.innerText += v + '\n')
         })
     })   
+
+    const drawRoom = (room) => {
+        let curRoom = currentRoom()
+        if (room) {
+            // Draw on canvas.
+            let x = room.location.x * mapScale
+            let z = room.location.z * mapScale
+            ctx.resetTransform()
+            ctx.translate(mapOffset.x(), mapOffset.y())
+            ctx.fillStyle = '#616161'
+            ctx.lineWidth = 1
+            if (curRoom && curRoom.uuid === room.uuid) {
+                ctx.strokeStyle = '#b1ffb1'
+            } else {
+                ctx.strokeStyle = '#f1f1f1'
+            }
+            ctx.clearRect(x, z, mapScale, mapScale)
+            ctx.rect(x, z, mapScale, mapScale)
+            ctx.fill()
+            ctx.stroke()
+        }
+    }
+
+    const drawRoomSelection = () => {
+        if (selectedCell.selected) {
+            ctx.resetTransform()
+            ctx.translate(mapOffset.x(), mapOffset.y())
+            ctx.rect(x, z, mapScale, mapScale)
+            ctx.strokeStyle = '#f1f1f1'
+            ctx.lineWidth = 2
+            ctx.stroke()
+        }
+    }
+
+    const drawAllRooms = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        
+        for (let r in roomslist) {
+            drawRoom(roomslist[r])
+        }
+
+        drawRoomSelection()
+    }
     
     const refreshRoomsList = (selected) => {
         selectedRoom = selected ? selected : selectedRoom
         rooms.innerHTML = ''        
-        let addRoom = document.getElementById("addRoom")
         addRoom.addEventListener('click', (e) => {
             fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }}).then((response) => response.json())
                 .then((data) => {
@@ -397,6 +446,9 @@
             rcontainer.querySelector('#room_name').innerText = room.name
             rcontainer.querySelector('#room_description').innerText = room.description
             rcontainer.querySelector('#room_location').innerText = JSON.stringify(room.location)
+
+            // Draw on canvas.
+            drawRoom(room)
         }
 
         for (let r in roomslist) {
@@ -418,6 +470,7 @@
     }).then((data) => {
         roomslist = data
         refreshRoomsList()
+        drawAllRooms()
     })
 
     // Load initial dictionary data.
