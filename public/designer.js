@@ -15,7 +15,7 @@
     const ctx = canvas.getContext('2d');
 
     var mapScale = 10
-    var mapOffset = { x: () => parseInt(canvas.width / 2), y: () => parseInt(canvas.height / 2) }
+    var mapOffset = { x: () => parseInt(canvas.clientWidth / 2), y: () => parseInt(canvas.clientHeight / 2) }
     //var mapOffset = { x: 1, y: 1 }
 
     var selectedKey = ''
@@ -390,10 +390,8 @@
         let curRoom = currentRoom()
         if (room) {
             // Draw on canvas.
-            let x = room.location.x * mapScale
-            let z = room.location.z * mapScale
-            ctx.resetTransform()
-            ctx.translate(mapOffset.x(), mapOffset.y())
+            let x = room.location.x * mapScale + mapOffset.x()
+            let z = room.location.z * mapScale + mapOffset.y()
             ctx.fillStyle = '#616161'
             ctx.lineWidth = 1
             if (curRoom && curRoom.uuid === room.uuid) {
@@ -410,9 +408,7 @@
 
     const drawRoomSelection = () => {
         if (selectedCell.selected) {
-            ctx.resetTransform()
-            ctx.translate(mapOffset.x(), mapOffset.y())
-            ctx.rect(x, z, mapScale, mapScale)
+            ctx.rect(selectedCell.x * mapScale + mapOffset.x(), selectedCell.y * mapScale + mapOffset.y(), mapScale, mapScale)
             ctx.strokeStyle = '#f1f1f1'
             ctx.lineWidth = 2
             ctx.stroke()
@@ -432,13 +428,6 @@
     const refreshRoomsList = (selected) => {
         selectedRoom = selected ? selected : selectedRoom
         rooms.innerHTML = ''        
-        addRoom.addEventListener('click', (e) => {
-            fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }}).then((response) => response.json())
-                .then((data) => {
-                    selectedRoom = data.uuid
-                    refreshRoomsList()
-                })
-        })
 
         let room = currentRoom()
         if (room) {
@@ -462,7 +451,37 @@
         }
     }
 
-    document.addEventListener('selectionchange', handleSelectionChange);
+    document.addEventListener('selectionchange', handleSelectionChange)
+    window.addEventListener('resize', (e) => {
+        canvas.width = canvas.clientWidth
+        canvas.height = canvas.clientHeight
+    })
+
+    canvas.width = canvas.clientWidth
+    canvas.height = canvas.clientHeight
+
+    canvas.addEventListener('mousemove', (e) => {
+        ctx.scale(1, 1)
+        let cellx = parseInt((e.clientX - canvas.offsetLeft - mapOffset.x()) / mapScale)
+        let celly = parseInt((e.clientY - canvas.offsetTop - mapOffset.y()) / mapScale)
+        document.getElementById("room_id").innerText = `Offset X/Y: ${mapOffset.x()}, ${mapOffset.y()}\nClient X/Y: ${cellx}, ${celly}`
+    })
+
+    canvas.addEventListener('click', (e) => {
+        let cellx = parseInt((e.clientX - canvas.offsetLeft - mapOffset.x()) / mapScale)
+        let celly = parseInt((e.clientY - canvas.offsetTop - mapOffset.y()) / mapScale)
+        selectedCell.selected = false
+        selectedCell = { selected: true, x: cellx, y: celly }
+        drawAllRooms()
+    })
+
+    addRoom.addEventListener('click', (e) => {
+        fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: { x: selectedCell.x, y: 0, z: selectedCell.y } }) }).then((response) => response.json())
+            .then((data) => {
+                selectedRoom = data.uuid
+                refreshRoomsList()
+            })
+    })
 
     // Load initial rooms list.
     fetch('http://localhost:8080/rooms', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).then((response) => {

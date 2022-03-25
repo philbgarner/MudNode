@@ -58,7 +58,7 @@ app.post('/dictionary', (req, res) => {
 })
 
 app.post('/room', (req, res) => {
-  let room = new Room()
+  let room = new Room({ location: req.body.location })
   if (rooms.addRoom(room)) {
     data.save()
     res.send(JSON.stringify(room))
