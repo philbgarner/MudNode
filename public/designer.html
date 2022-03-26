@@ -208,6 +208,11 @@
           margin: 0.1em;
         }
 
+        #status {
+          color: #c1c1c1;
+          font-size: 10pt;
+        }
+
     </style>
   </head>
   <body>
@@ -243,14 +248,14 @@
           <div>name:</div><p id="room_name" class="editor" contenteditable="true"></p></p>
           <div>description:</div><p id="room_description" class="editor multirow" contenteditable="true"></p></p>
           <div>location:</div><p id="room_location"></p>
-          <ul id="roomslist"></ul>
-        </div>
-        <div>
-          <input type="button" value="Add Room" id="addRoom" />
+          <!-- <ul id="roomslist"></ul> -->
         </div>
       </div>
       <div>
-        <h4>Map</h4>
+        <h4 style="display: inline-block">Map</h4> <span id="status"></span>
+        <div>
+          <input type="button" value="Add Room" id="addRoom" />
+        </div>
         <canvas id="canvas"></canvas>
       </div>
     </div>

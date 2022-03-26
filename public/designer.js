@@ -15,8 +15,6 @@
     const ctx = canvas.getContext('2d');
 
     var mapScale = 10
-    var mapOffset = { x: () => parseInt(canvas.clientWidth / 2), y: () => parseInt(canvas.clientHeight / 2) }
-    //var mapOffset = { x: 1, y: 1 }
 
     var selectedKey = ''
     var selectedRoom = ''
@@ -384,15 +382,27 @@
         fetch('http://localhost:8080/process', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ template: template.innerText })}).then((response) => {
             response.text().then((v) => ofield.innerText += v + '\n')
         })
-    })   
+    })
+
+    const drawGrid = () => {
+        ctx.beginPath()
+        for (let j = 0; j < canvas.clientHeight; j += mapScale) {
+            for (let i = 0; i < canvas.clientWidth; i += mapScale) {
+                ctx.strokeStyle = '#515151'
+                ctx.setLineDash([1, 2])
+                ctx.rect(i, j, mapScale, mapScale)
+            }
+        }
+        ctx.stroke()
+    }
 
     const drawRoom = (room) => {
         let curRoom = currentRoom()
         if (room) {
             // Draw on canvas.
-            let x = room.location.x * mapScale + mapOffset.x()
-            let z = room.location.z * mapScale + mapOffset.y()
-            ctx.fillStyle = '#616161'
+            let x = room.location.x * mapScale
+            let z = room.location.z * mapScale
+            ctx.fillStyle = '#0991c1'
             ctx.lineWidth = 1
             if (curRoom && curRoom.uuid === room.uuid) {
                 ctx.strokeStyle = '#b1ffb1'
@@ -402,17 +412,16 @@
             ctx.clearRect(x, z, mapScale, mapScale)
             ctx.rect(x, z, mapScale, mapScale)
             ctx.fill()
-            ctx.stroke()
+            //ctx.stroke()
         }
     }
 
     const drawRoomSelection = () => {
-        if (selectedCell.selected) {
-            ctx.rect(selectedCell.x * mapScale + mapOffset.x(), selectedCell.y * mapScale + mapOffset.y(), mapScale, mapScale)
-            ctx.strokeStyle = '#f1f1f1'
-            ctx.lineWidth = 2
-            ctx.stroke()
-        }
+        ctx.beginPath()
+        ctx.strokeStyle = selectedCell.selected ? '#f1f1f1' : '#515151'
+        ctx.lineWidth = 2
+        ctx.rect(selectedCell.x * mapScale, selectedCell.y * mapScale, mapScale, mapScale)
+        ctx.stroke()
     }
 
     const drawAllRooms = () => {
@@ -423,11 +432,11 @@
         }
 
         drawRoomSelection()
+        drawGrid()
     }
     
-    const refreshRoomsList = (selected) => {
+    const refreshRoom = (selected) => {
         selectedRoom = selected ? selected : selectedRoom
-        rooms.innerHTML = ''        
 
         let room = currentRoom()
         if (room) {
@@ -435,20 +444,21 @@
             rcontainer.querySelector('#room_name').innerText = room.name
             rcontainer.querySelector('#room_description').innerText = room.description
             rcontainer.querySelector('#room_location').innerText = JSON.stringify(room.location)
-
-            // Draw on canvas.
-            drawRoom(room)
+        } else {
+            rcontainer.querySelector('#room_id').innerText = ''
+            rcontainer.querySelector('#room_name').innerText = ''
+            rcontainer.querySelector('#room_description').innerText = ''
+            rcontainer.querySelector('#room_location').innerText = ''
         }
+    }
 
+    const findRoomAt = (x, y, z) => {
         for (let r in roomslist) {
-            let el = document.createElement('li')
-            el.innerText = roomslist[r].name + ' ' + roomslist[r].location
-            el.addEventListener('click', (e) => {
-                selectedRoom = r
-                refreshRoomsList(r)
-            })
-            rooms.appendChild(el)
+            if (roomslist[r].location.x === x && roomslist[r].location.y === y && roomslist[r].location.z === z) {
+                return roomslist[r]
+            }
         }
+        return null
     }
 
     document.addEventListener('selectionchange', handleSelectionChange)
@@ -457,30 +467,59 @@
         canvas.height = canvas.clientHeight
     })
 
+    const getMouseX = (e) => {
+        return e.clientX - e.target.offsetLeft + window.scrollX
+    }
+
+    const getMouseY = (e) => {
+        return e.clientY - e.target.offsetTop + window.scrollY
+    }
+
     canvas.width = canvas.clientWidth
     canvas.height = canvas.clientHeight
 
     canvas.addEventListener('mousemove', (e) => {
         ctx.scale(1, 1)
-        let cellx = parseInt((e.clientX - canvas.offsetLeft - mapOffset.x()) / mapScale)
-        let celly = parseInt((e.clientY - canvas.offsetTop - mapOffset.y()) / mapScale)
-        document.getElementById("room_id").innerText = `Offset X/Y: ${mapOffset.x()}, ${mapOffset.y()}\nClient X/Y: ${cellx}, ${celly}`
+        let cellx = Math.floor(getMouseX(e) / mapScale)
+        let celly = Math.floor(getMouseY(e) / mapScale)
+        document.getElementById("status").innerText = `Client X/Y: ${cellx}, ${celly} Sel X/Y: ${selectedCell.x}, ${selectedCell.y}`
     })
 
     canvas.addEventListener('click', (e) => {
-        let cellx = parseInt((e.clientX - canvas.offsetLeft - mapOffset.x()) / mapScale)
-        let celly = parseInt((e.clientY - canvas.offsetTop - mapOffset.y()) / mapScale)
+        let cellx = Math.floor(getMouseX(e) / mapScale)
+        let celly = Math.floor(getMouseY(e) / mapScale)
         selectedCell.selected = false
+        drawRoomSelection()
         selectedCell = { selected: true, x: cellx, y: celly }
-        drawAllRooms()
+        let room = findRoomAt(cellx, 0, celly)
+        if (room) {
+            selectedRoom = room.uuid
+        } else {
+            selectedRoom = ''
+        }
+        refreshRoom()
+        drawRoomSelection()
     })
 
     addRoom.addEventListener('click', (e) => {
-        fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: { x: selectedCell.x, y: 0, z: selectedCell.y } }) }).then((response) => response.json())
-            .then((data) => {
-                selectedRoom = data.uuid
-                refreshRoomsList()
-            })
+        fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: { x: selectedCell.x, y: 0, z: selectedCell.y } }) })
+        .then((response) => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                return response.json().then(v => Promise.reject(v.message))
+            }
+        })
+        .then((data) => {
+            selectedRoom = data.uuid
+            roomslist[data.uuid] = data
+            drawRoom(roomslist[data.uuid])
+            drawRoomSelection()
+            //refreshRoom()
+        })
+        .catch((e) => {
+            alert(e)
+        })
     })
 
     // Load initial rooms list.
@@ -488,7 +527,7 @@
         return response.json()
     }).then((data) => {
         roomslist = data
-        refreshRoomsList()
+        //refreshRoom()
         drawAllRooms()
     })
 

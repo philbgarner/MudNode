@@ -63,7 +63,7 @@ app.post('/room', (req, res) => {
     data.save()
     res.send(JSON.stringify(room))
   } else {
-    res.status(500).send(`Error: Room at location ${JSON.stringify(room.location)} already exists.`)
+    res.status(500).send(`{ "message": "Error: Room at location (${room.location.x}, ${room.location.y}, ${room.location.z}) already exists." }`)
   }
 })
 
