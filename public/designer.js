@@ -80,7 +80,8 @@
     
             return {
                 start: getTextLength(editor, range.startContainer, range.startOffset),
-                end: getTextLength(editor, range.endContainer, range.endOffset)
+                end: getTextLength(editor, range.endContainer, range.endOffset),
+                range: range
             };
         } else
             return null;
@@ -164,11 +165,17 @@
                     toggleSuggestions({ type: 'Token Types:', data: ['* = Key Search', '? = Condition'] }, false)
                 } else if (word.includes('[*') && !word.includes(']')) {
                     let lookup = word.slice(2)
+                    filterKeys.value = lookup
+                    refreshKeys()
                     lookup += dictionary[lookup] ? ' found.' : ' <span style="color: #f00">not found</span>.'
                     toggleSuggestions({ type: 'Key Search:', data: [lookup] }, false)
                 } else if (word.includes(']')) {
                     let lookup = word.slice(2, word.length - 1)
-                    lookup += dictionary[lookup] ? ' found.' : ' <span style="color: #f00">not found</span>.'
+                    filterKeys.value = lookup
+                    refreshKeys()
+//                    lookup += dictionary[lookup] ? ' found.' : ' <span style="color: #f00">not found</span>.'
+                    let keys = Object.keys(dictionary)
+                    lookup += keys.filter(f => dictionary[f].includes(lookup)) ? ' found.' : ' <span style="color: #f00">not found</span>.'
                     toggleSuggestions({ type: 'Key Search:', data: [lookup] }, false)
                 }
                 else {
@@ -334,6 +341,7 @@
         }
         p.contentEditable = true
         p.innerText = text
+        p.classList.add('editor')
         val.appendChild(p)
         dValues.appendChild(val)
         return p
