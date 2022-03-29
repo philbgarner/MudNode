@@ -179,7 +179,7 @@
           color: #111;
         }
 
-        #worldmap {
+        #roomseditor {
           padding: 0.5em;
           background-color: darkslateblue;
           max-width: 95vw;
@@ -189,10 +189,10 @@
           margin: 0.25em;
           display: flex;
         }
-        #worldmap > div {
+        #roomseditor > div {
           flex: 1
         }
-        #worldmap > div > canvas {
+        #roomseditor > div > canvas {
           background-color: darkgrey;
           width: 40vw;
           height: 40vh;
@@ -211,6 +211,50 @@
         #status {
           color: #c1c1c1;
           font-size: 10pt;
+        }
+
+        #navbar {
+          max-width: 95vw;
+          max-height: 3em;
+          margin: 0;
+          margin-top: 1em;
+        }
+
+        #navbar > ul {
+          display: flex;
+          align-items: center;
+          justify-content: left;
+          flex-wrap: wrap;
+          flex-direction: row;
+          width: 100%;
+          margin: 0;
+        }
+
+        #navbar > ul > li {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Lucida Console';
+          font-size: 10pt;
+          max-width: 12em;
+          min-width: 4em;
+          max-height: 3em;
+          min-height: 2em;
+          background-color: darkslateblue;
+          color: white;
+          list-style-type: none;
+          cursor: pointer;
+          margin: 0;
+          border-top-right-radius: 0.25em;
+          border-top-left-radius: 0.25em;
+          margin-right: 0.15em;
+        }
+        #navbar > ul > li:hover {
+          color: #ff0;
+        }
+        .selected-nav {
+          color: #ff0 !important;
         }
 
     </style>
@@ -240,7 +284,12 @@
       </div>
       <button id="addKey" onclick="">Add</button><button id="removeKey">Remove</button><button id="editKey">Rename</button>
     </div>
-    <div id="worldmap">
+    <div id="navbar">
+      <ul>
+        <li class="selected-nav"><span>Rooms & Areas</span></li>
+      </ul>
+    </div>
+    <div id="roomseditor">
       <div>
         <h4>Room</h4>
         <div id="rcontainer">

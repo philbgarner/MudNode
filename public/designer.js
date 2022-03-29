@@ -7,8 +7,6 @@
     const btnProcess = document.getElementById("idprocess")
     const ofield = document.getElementById("ofield")
     const filterKeys = document.getElementById("filterKeys")
-    const worldmap = document.getElementById("worldmap")
-    const rooms = document.getElementById("roomslist")
     const rcontainer = document.getElementById("rcontainer")
     const addRoom = document.getElementById("addRoom")
     const canvas = document.getElementById('canvas');
