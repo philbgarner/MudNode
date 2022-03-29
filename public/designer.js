@@ -11,12 +11,14 @@
     const addRoom = document.getElementById("addRoom")
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-
+    const navitems = document.querySelectorAll('#navbar > ul > li')
+    
     var mapScale = 10
 
     var selectedKey = ''
     var selectedRoom = ''
     var selectedCell = { selected: false, x: 0, y: 0 }
+    var currentNavId = document.getElementsByClassName('selected-nav')[0].getAttribute('targetEditor')
 
     var dictionary = {}
     var roomslist = {}
@@ -26,6 +28,24 @@
         data: []
     }
     var showSuggestion = false
+    
+    for (let item of navitems) {
+        item.addEventListener('click', () => {
+            currentNavId = item.getAttribute("targetEditor")
+            refreshNavItems()
+            item.classList.add('selected-nav')
+        })
+    }
+
+    const refreshNavItems = () => {
+        for (let item of navitems) {
+            let el = document.getElementById(item.getAttribute('targetEditor'))
+            if (el) {
+                el.style.display = el.id === currentNavId ? 'block' : 'none'
+            }
+            item.classList.remove('selected-nav')
+        }
+    }
 
     const toggleSuggestions = (sugg, turnOff) => {
         suggestion = sugg
@@ -544,4 +564,8 @@
         dictionary = data
         refreshDictionary()
     })
+
+    refreshNavItems()
+    
+
 })()

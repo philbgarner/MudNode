@@ -179,31 +179,28 @@
           color: #111;
         }
 
-        #roomseditor {
+        .paneleditor {
           padding: 0.5em;
           background-color: darkslateblue;
           max-width: 95vw;
           max-height: 60vh;
+          min-height: 50vh;
           border-radius: 0.25em;
           font-family: 'Lucida Console';
           margin: 0.25em;
           display: flex;
+          flex-direction: column;
+          font-size: 10pt;
         }
-        #roomseditor > div {
+        .paneleditor > div {
           flex: 1
         }
-        #roomseditor > div > canvas {
+        .paneleditor > div > canvas {
           background-color: darkgrey;
           width: 40vw;
           height: 40vh;
         }
-
-        #rcontainer {
-          display: flex;
-          flex-direction: column;
-          font-size: 10pt;
-        }
-        #rcontainer > div, #rcontainer > p {
+        .paneleditor > div, .paneleditor > p {
           flex: 1 !important;
           margin: 0.1em;
         }
@@ -284,12 +281,18 @@
       </div>
       <button id="addKey" onclick="">Add</button><button id="removeKey">Remove</button><button id="editKey">Rename</button>
     </div>
+
     <div id="navbar">
       <ul>
-        <li class="selected-nav"><span>Rooms & Areas</span></li>
+        <li class="selected-nav" targetEditor="roomseditor"><span>Rooms & Areas</span></li>
+        <li targetEditor="roomtemplateseditor"><span>Room Templates</span></li>
+        <li targetEditor="areatemplateseditor"><span>Area Templates</span></li>
+        <li targetEditor="mobtemplateseditor"><span>Mob Templates</span></li>
+        <li targetEditor="itemtemplateseditor"><span>Item Templates</span></li>
       </ul>
     </div>
-    <div id="roomseditor">
+
+    <div id="roomseditor" class="paneleditor">
       <div>
         <h4>Room</h4>
         <div id="rcontainer">
@@ -308,6 +311,31 @@
         <canvas id="canvas"></canvas>
       </div>
     </div>
+
+    <div id="roomtemplateseditor" class="paneleditor">
+      <div>
+        <h4>Room Template</h4>
+      </div>
+    </div>
+
+    <div id="areatemplateseditor" class="paneleditor">
+      <div>
+        <h4>Area Template</h4>
+      </div>
+    </div>
+
+    <div id="mobtemplateseditor" class="paneleditor">
+      <div>
+        <h4>Mob Template</h4>
+      </div>
+    </div>
+
+    <div id="itemtemplateseditor" class="paneleditor">
+      <div>
+        <h4>Item Template</h4>
+      </div>
+    </div>    
+
     <div id="suggestions"></div>
     <script src="designer.js"></script>
   </body>
