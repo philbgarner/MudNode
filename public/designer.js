@@ -41,7 +41,7 @@
         for (let item of navitems) {
             let el = document.getElementById(item.getAttribute('targetEditor'))
             if (el) {
-                el.style.display = el.id === currentNavId ? 'block' : 'none'
+                el.style.display = el.id === currentNavId ? 'flex' : 'none'
             }
             item.classList.remove('selected-nav')
         }
@@ -491,6 +491,8 @@
     window.addEventListener('resize', (e) => {
         canvas.width = canvas.clientWidth
         canvas.height = canvas.clientHeight
+        drawAllRooms()
+        drawGrid()
     })
 
     const getMouseX = (e) => {
@@ -547,6 +549,21 @@
             alert(e)
         })
     })
+
+    const setupRoomEditorFields = () => {
+        <div>id:</div><p id="roomtmp_id" class="editor" style="color: lightgrey;"></p>
+        <div>room template name:</div><p id="roomtmp_name" class="editor" contenteditable="true"></p></p>
+        <div>potential room name:</div><p id="roomtmp_names" class="editor" contenteditable="true"></p></p>
+        <div>potential room description:</div><p id="roomtmp_descriptions" class="editor multirow" contenteditable="true"></p></p>
+        <div>potential room components:</div><p id="roomtmp_components" class="editor multirow" contenteditable="true"></p></p>
+        return {
+            id: document.getElementById('roomtmp_id'),
+            name: document.getElementById('roomtmp_id'),
+            description: document.getElementById('roomtmp_id'),
+            id: document.getElementById('roomtmp_id'),
+            id: document.getElementById('roomtmp_id'),
+        }
+    }
 
     // Load initial rooms list.
     fetch('http://localhost:8080/rooms', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).then((response) => {
