@@ -77,8 +77,8 @@
             range.collapse(true);
             var rect = range.getClientRects()[0];
             if(rect) {
-                y = rect.top;
-                x = rect.left;
+                y = rect.top + window.scrollY
+                x = rect.left + window.scrollX
             }
             }
         }
