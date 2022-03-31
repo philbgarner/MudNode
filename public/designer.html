@@ -24,6 +24,41 @@
             color: ivory;
         }
 
+        #room_exits {
+          background-color: darkslategray;
+          min-height: 1em;
+          max-height: 25em;
+          max-width: 90%;
+          padding: 0.5em;
+          flex: 20em;
+          font-family: 'Lucida Console';
+          color: ivory;
+        }
+
+        #room_exits > div {
+          margin: 0.05em;
+          padding: 0.5em;
+          border-radius: 0.75em;
+          display: inline-block;
+          background-color: gray;
+          color: darkgrey;
+          cursor: pointer;
+        }
+
+        #room_exits > div:hover {
+          color: #ff0 !important;
+        }
+
+        #room_exits > div[useExit] {
+          background-color: green;
+          color: white;
+        }
+
+        #room_exits > div[nonExistant] {
+          background-color: darkred !important;
+          color: #ff0 !important;
+        }
+
         .multirow {
           min-height: 5em;
         }
@@ -298,9 +333,15 @@
         <h4>Room</h4>
         <div id='rcontainer' class="property-container">
           <div>id:</div><p id="room_id" class="editor" style="color: lightgrey;"></p>
-          <div>name:</div><p id="room_name" class="editor" contenteditable="true"></p></p>
-          <div>description:</div><p id="room_description" class="editor multirow" contenteditable="true"></p></p>
+          <div>name:</div><p id="room_name" class="editor" contenteditable="true"></p>
+          <div>description:</div><p id="room_description" class="editor multirow" contenteditable="true"></p>
           <div>location:</div><p id="room_location"></p>
+          <div>exits:</div><div id="room_exits">
+            <div>North</div>
+            <div>East</div>
+            <div>West</div>
+            <div>South</div>
+          </div>
           <!-- <ul id="roomslist"></ul> -->
         </div>
       </div>

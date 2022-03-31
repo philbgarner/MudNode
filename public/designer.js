@@ -465,8 +465,8 @@
         selectedRoom = selected ? selected : selectedRoom
 
         let room = currentRoom()
+        setupRoomEditorFields(room)
         if (room) {
-            setupRoomEditorFields(room)
             rcontainer.querySelector('#room_id').innerText = room.uuid
             rcontainer.querySelector('#room_name').innerText = room.name
             rcontainer.querySelector('#room_description').innerText = room.description
@@ -551,11 +551,44 @@
         })
     })
 
+    const cloneNode = (node) => {
+        let old_element = node;
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
+        return new_element
+    }
+    
     function setupRoomEditorFields(room) {
         let ret = {
             id: document.getElementById('room_id'),
-            name: document.getElementById('room_name'),
-            description: document.getElementById('room_description'),
+            name: cloneNode(document.getElementById('room_name')),
+            description: cloneNode(document.getElementById('room_description')),
+        }
+
+        const roomExits = document.getElementById('room_exits')
+
+        function roomClick (e) {
+            if (e.target.getAttribute('useExit')) {
+                e.target.removeAttribute('useExit')
+            } else {
+                e.target.setAttribute('useExit', true)
+                let directions = { 'North': { x: 0, y: 0, z: -1 }, 'South': { x: 0, y: 0, z: 1 }, 'East': { x: 1, y: 0, z: 0 }, 'West': { x: -1, y: 0, z: 0 }}
+                let dir = directions[e.target.innerText]
+                let loc = { x: room.location.x + dir.x, y: room.location.y + dir.y, z: room.location.z + dir.z }
+                let dirRoom = findRoomAt(loc.x, loc.y, loc.z)
+                console.log('dir', dir, 'loc', loc, dirRoom)
+            }
+        }    
+
+        for (let child of roomExits.childNodes) {
+            child.removeEventListener('click', roomClick)
+            if (room) {
+                child.addEventListener('click', roomClick)
+            } else {
+                if (child.nodeType === 1) {
+                    child.removeAttribute('useExit')
+                }
+            }
         }
 
         const updateFields = () => {
@@ -568,8 +601,7 @@
             }) })
         }
 
-        ret.name.removeEventListener('blur', (e) => {})
-        ret.name.addEventListener('blur', (e) => {
+        function blurField(e) {
             updateFields().then((response) => {
                 if (response.ok) {
                     return response.json()
@@ -579,20 +611,12 @@
             }).then((data) => {
                 roomslist[data.uuid] = data
             })
-        })
+        }
 
-        ret.description.removeEventListener('blur', (e) => {})
-        ret.description.addEventListener('blur', (e) => {
-            updateFields().then((response) => {
-                if (response.ok) {
-                    return response.json()
-                } else {
-                    return response.json().then(v => Promise.reject(response.message))
-                }
-            }).then((data) => {
-                roomslist[data.uuid] = data
-            })
-        })
+        if (room) {
+            ret.name.addEventListener('blur', blurField)
+            ret.description.addEventListener('blur', blurField)
+        }
 
         return ret
     }
