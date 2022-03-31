@@ -466,6 +466,7 @@
 
         let room = currentRoom()
         if (room) {
+            setupRoomEditorFields(room)
             rcontainer.querySelector('#room_id').innerText = room.uuid
             rcontainer.querySelector('#room_name').innerText = room.name
             rcontainer.querySelector('#room_description').innerText = room.description
@@ -550,19 +551,50 @@
         })
     })
 
-    const setupRoomEditorFields = () => {
-        <div>id:</div><p id="roomtmp_id" class="editor" style="color: lightgrey;"></p>
-        <div>room template name:</div><p id="roomtmp_name" class="editor" contenteditable="true"></p></p>
-        <div>potential room name:</div><p id="roomtmp_names" class="editor" contenteditable="true"></p></p>
-        <div>potential room description:</div><p id="roomtmp_descriptions" class="editor multirow" contenteditable="true"></p></p>
-        <div>potential room components:</div><p id="roomtmp_components" class="editor multirow" contenteditable="true"></p></p>
-        return {
-            id: document.getElementById('roomtmp_id'),
-            name: document.getElementById('roomtmp_id'),
-            description: document.getElementById('roomtmp_id'),
-            id: document.getElementById('roomtmp_id'),
-            id: document.getElementById('roomtmp_id'),
+    function setupRoomEditorFields(room) {
+        let ret = {
+            id: document.getElementById('room_id'),
+            name: document.getElementById('room_name'),
+            description: document.getElementById('room_description'),
         }
+
+        const updateFields = () => {
+            return fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uuid: room. uuid,
+                location: room.location,
+                name: ret.name.innerText,
+                description: ret.description.innerText
+            }) })
+        }
+
+        ret.name.removeEventListener('blur', (e) => {})
+        ret.name.addEventListener('blur', (e) => {
+            updateFields().then((response) => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return response.json().then(v => Promise.reject(response.message))
+                }
+            }).then((data) => {
+                roomslist[data.uuid] = data
+            })
+        })
+
+        ret.description.removeEventListener('blur', (e) => {})
+        ret.description.addEventListener('blur', (e) => {
+            updateFields().then((response) => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return response.json().then(v => Promise.reject(response.message))
+                }
+            }).then((data) => {
+                roomslist[data.uuid] = data
+            })
+        })
+
+        return ret
     }
 
     // Load initial rooms list.

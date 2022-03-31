@@ -58,12 +58,22 @@ app.post('/dictionary', (req, res) => {
 })
 
 app.post('/room', (req, res) => {
-  let room = new Room({ location: req.body.location })
-  if (rooms.addRoom(room)) {
-    data.save()
-    res.send(JSON.stringify(room))
+  if (req.body.uuid && rooms.getRoom(req.body.uuid)) {
+    let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description })
+    if (rm) {
+      data.save()
+      res.send(JSON.stringify(rm))
+    } else {
+      res.status(500).send(`{ "message": "Error: Failed to set room ${req.body.uuid}." }`)
+    }
   } else {
-    res.status(500).send(`{ "message": "Error: Room at location (${room.location.x}, ${room.location.y}, ${room.location.z}) already exists." }`)
+    let room = new Room({ location: req.body.location })
+    if (rooms.addRoom(room)) {
+      data.save()
+      res.send(JSON.stringify(room))
+    } else {
+      res.status(500).send(`{ "message": "Error: Room at location (${room.location.x}, ${room.location.y}, ${room.location.z}) already exists." }`)
+    }
   }
 })
 
