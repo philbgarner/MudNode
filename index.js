@@ -11,8 +11,7 @@ import { entities, data, config, users, rooms,
   Me, Save, Reload, ListPlayers, Impersonate, CreateEntity, CreateMobile,
   MobileAddComponent, EntityAddComponent, RemoveEntity, RoomAddComponent,
   NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe,
-  Room,
-  MixedForestArea, HamletArea, RoadArea, grammar
+  Room, User, Player, grammar
 } from './lib/mudnode.js'
 
 const app = express();
@@ -59,7 +58,7 @@ app.post('/dictionary', (req, res) => {
 
 app.post('/room', (req, res) => {
   if (req.body.uuid && rooms.getRoom(req.body.uuid)) {
-    let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description })
+    let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description, exits: req.body.exits, colour: req.body.colour })
     if (rm) {
       data.save()
       res.send(JSON.stringify(rm))
