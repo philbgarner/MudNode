@@ -1,0 +1,288 @@
+body {
+    background-color: black;
+}
+
+div.container {
+    display: flex;
+    flex-flow: row wrap;
+    width: 95vw;
+}
+
+.editor {
+    background-color: darkslategray;
+    min-height: 1em;
+    max-height: 25em;
+    max-width: 90%;
+    padding: 0.5em;
+    flex: 20em;
+    font-family: 'Lucida Console';
+    color: ivory;
+}
+
+#room_exits {
+  background-color: darkslategray;
+  min-height: 1em;
+  max-height: 25em;
+  max-width: 90%;
+  padding: 0.5em;
+  flex: 20em;
+  font-family: 'Lucida Console';
+  color: ivory;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+#room_exits > div {
+  margin: 0.05em;
+  padding: 0.5em;
+  border-radius: 0.75em;
+  display: inline-block;
+  background-color: gray;
+  color: darkgrey;
+  cursor: pointer;
+}
+
+#room_exits > div:hover {
+  color: #ff0 !important;
+}
+
+#room_exits > div[useExit] {
+  background-color: green;
+  color: white;
+}
+
+#room_exits > div[nonExistant] {
+  background-color: darkred !important;
+  color: #ff0 !important;
+}
+
+.multirow {
+  min-height: 5em;
+}
+
+button {
+    flex: 1em;
+    max-width: 8em;
+    max-height: 2em;
+}
+
+span.token_open {
+  background-color: blue;
+  color: white;
+  font-weight: bold;
+}
+span.token_close {
+  background-color: blue;
+  color: white;
+  font-weight: bold;
+}
+span.token {
+  background-color: blue;
+  color: yellow;
+  font-weight: bold;
+}
+#suggestions {
+  background-color: blue;
+  color: white;
+  font-weight: 100;
+  position: absolute;
+  top: 10em;
+  left: 10em;
+  display: none;
+  min-width: 10em;
+  min-height: 3em;
+  font-family: 'Lucida Console';
+  font-size: 1em;
+}
+#dictionary {
+  display: flex;
+  flex-flow: row wrap;
+  background-color: darkslateblue;
+  min-height: 10em;
+  max-height: 25em;
+  padding: 0.5em;
+  font-family: 'Lucida Console';
+  font-size: 10pt;
+  margin: 0.25em;
+}
+#dictionary > div {
+  padding: 1em;
+}
+#dictionary > div:first-child {
+  min-width: 30vw;
+}
+#dictionary ul {
+  min-height: 100%;
+  margin: 0.05em;
+  flex: 1;
+  border: 1px darkgrey;
+  border-style: solid;
+  border-top-style: none;
+  border-bottom-style: none;
+}
+#dictionary ul > li {
+  list-style-type: none;
+  padding: 0.5em;
+  margin: 0.1em;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0.25em;
+  min-height: 1em;
+}
+#dcontainer {
+  padding: 0.5em;
+  background-color: darkslateblue;
+  max-width: 95vw;
+  border-radius: 0.25em;
+  font-family: 'Lucida Console';
+  margin: 0.25em;
+}
+#dcontainer > input {
+  background-color: darkslateblue;
+  border: none;
+  border-bottom: 1px solid white;
+  color: lightgrey;
+  outline: 0;
+}
+#dcontainer > h4 {
+  display: inline-block;
+}
+.container > div {
+  padding: 1em;
+  min-width: 10em;
+}
+.container > div > input {
+  max-width: 2em;
+}
+.container > div > button {
+  min-width: 100%;
+  min-height: 5em;
+}
+#dictionary p {
+  color: #fff;
+  width: 100%;
+  display: inline-block;
+  height: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+h1, h2, h3, h4 {
+  color: white;
+}
+#dKeys { 
+  list-style-type: none;
+  margin: 0.1em;
+  padding: 0.25em;
+  color: #fff;
+}
+#dKeys > li {
+  cursor: pointer;
+}
+#dValues {
+  list-style-type: none;
+  margin: 0.1em;
+  padding: 0.25em;
+  color: #fff;
+  min-width: 50vw;
+  max-width: 55vw;
+}
+.selected-key {
+  background-color: #f1f1f1 !important;
+  color: black;
+}
+.selected-value {
+  border-color: #f1f1f1a9 !important;
+  border-style: dotted;
+}
+
+#ocontainer {
+  padding: 0.5em;
+  background-color: lightslategrey;
+  max-width: 95vw;
+  border-radius: 0.25em;
+  font-family: 'Lucida Console';
+  font-size: 10pt;
+  min-height: 3em;
+  margin: 0.25em;
+}
+
+#ofield {
+  font-family: 'Lucida Console';
+  color: #111;
+}
+
+.paneleditor {
+  padding: 0.5em;
+  background-color: darkslateblue;
+  max-width: 95vw;
+  max-height: 60vh;
+  min-height: 50vh;
+  border-radius: 0.25em;
+  font-family: 'Lucida Console';
+  margin: 0.25em;
+  display: flex;
+  flex-direction: row;
+  font-size: 10pt;
+}
+.paneleditor > div {
+  flex: 1;
+  max-width: 50%;
+}
+.paneleditor > div > canvas {
+  background-color: darkgrey;
+  width: 40vw;
+  height: 40vh;
+}
+.paneleditor > div, .paneleditor > p {
+  flex: 1 !important;
+  margin: 0.1em;
+}
+
+#status {
+  color: #c1c1c1;
+  font-size: 10pt;
+}
+
+#navbar {
+  max-width: 95vw;
+  max-height: 3em;
+  margin: 0;
+  margin-top: 1em;
+}
+
+#navbar > ul {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: 100%;
+  margin: 0;
+}
+
+#navbar > ul > li {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Lucida Console';
+  font-size: 10pt;
+  max-width: 12em;
+  min-width: 4em;
+  max-height: 3em;
+  min-height: 2em;
+  background-color: darkslateblue;
+  color: white;
+  list-style-type: none;
+  cursor: pointer;
+  margin: 0;
+  border-top-right-radius: 0.25em;
+  border-top-left-radius: 0.25em;
+  margin-right: 0.15em;
+}
+#navbar > ul > li:hover {
+  color: #ff0;
+}
+.selected-nav {
+  color: #ff0 !important;
+}

@@ -11,8 +11,31 @@
     const addRoom = document.getElementById("addRoom")
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const navitems = document.querySelectorAll('#navbar > ul > li')
+    const navitems = document.querySelectorAll('#navbar > ul > li[targetEditor]')
+
+    const toggleButtonOpen = document.getElementById("toggleButtonOpen")
+    const toggleButton = document.getElementById("toggleButton")
+    const tcontainer = document.getElementById("tcontainer")
+    const ocontainer = document.getElementById("ocontainer")
+    const dcontainer = document.getElementById("dcontainer")
+
+    toggleButtonOpen.addEventListener('click', (e) => {
+        toggleButtonOpen.style.display = 'none'
+        toggleButton.style.display = 'flex'
+        tcontainer.style.display = 'flex'
+        ocontainer.style.display = 'block'
+        dcontainer.style.display = 'block'
+    })
+    toggleButton.addEventListener('click', (e) => {
+        toggleButtonOpen.style.display = 'flex'
+        toggleButton.style.display = 'none'
+        tcontainer.style.display = 'none'
+        ocontainer.style.display = 'none'
+        dcontainer.style.display = 'none'
+    })
     
+    toggleButton.click()
+
     var mapScale = 10
 
     var selectedKey = ''
@@ -366,8 +389,6 @@
         refreshKeys(selected)
     }
 
-    editor = document.querySelector('.editor');
-
     btnRemoveKey.addEventListener('click', () => {
         let key = currentKey().innerText
         if (key) {
@@ -543,6 +564,7 @@
             selectedRoom = data.uuid
             roomslist[data.uuid] = data
             drawRoom(roomslist[data.uuid])
+            refreshRoom(data.uuid)
             drawRoomSelection()
         })
         .catch((e) => {
@@ -686,6 +708,7 @@
                 }
             }).then((data) => {
                 roomslist[data.uuid] = data
+                drawRoom(data)
             })
         }
 
