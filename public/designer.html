@@ -7,8 +7,8 @@
   <body>
     <div id="navbar">
       <ul>
-        <li id="toggleButtonOpen" title="Show Template Editor and Dictionary panels."><span>&gt;&gt;</span></li>
-        <li id="toggleButton" title="Hide Template Editor and Dictionary panels."><span>&lt;&lt;</span></li>
+        <li id="toggleButtonOpen" title="Show Template Editor and Dictionary panels."><span>►</span></li>
+        <li id="toggleButton" title="Hide Template Editor and Dictionary panels."><span>▼</span></li>
         <li class="selected-nav" targetEditor="roomseditor"><span>Rooms & Areas</span></li>
         <li targetEditor="roomtemplateseditor"><span>Room Templates</span></li>
         <li targetEditor="areatemplateseditor"><span>Area Templates</span></li>
@@ -44,6 +44,7 @@
     <div id="roomseditor" class="paneleditor">
       <div>
         <h4>Room</h4>
+        <div class="property-container-header" targetContainer="rcontainer" open="true">Core Properties</div>
         <div id='rcontainer' class="property-container">
           <div>id:</div><p id="room_id" class="editor" style="color: lightgrey;"></p>
           <div>name:</div><p id="room_name" class="editor" contenteditable="true"></p>
@@ -57,6 +58,13 @@
           </div>
           <div>colour:</div><div><input type='color' id="room_colour" /></div>
           <!-- <ul id="roomslist"></ul> -->
+        </div>
+        
+        <div class="property-container-header" targetContainer="ccontainer" open="true">Custom Properties</div>
+        <div id='ccontainer' class="custom-property-container">
+          <div class="header">key</div><div class="header">value</div>
+          <!-- <div><input type="text" placeholder="custom property name" value="" /></div><div><input type="text" placeholder="property value" value="" /></div> -->
+          <div class="header"><button id="new_property">New Property</button> <button>Delete Property</button></div>
         </div>
       </div>
       <div>

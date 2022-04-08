@@ -1,4 +1,5 @@
 (() => {
+
     const suggestions = document.getElementById("suggestions")
     const dKeys = document.getElementById("dKeys")
     const dValues = document.getElementById("dValues")
@@ -605,7 +606,8 @@
             name: cloneNode(document.getElementById('room_name')),
             description: cloneNode(document.getElementById('room_description')),
             roomExits: roomExits,
-            colour: cloneNode(document.getElementById('room_colour'))
+            colour: cloneNode(document.getElementById('room_colour')),
+            newProperty: document.getElementById('new_property')
         }
 
         let directions = { 'North': { x: 0, y: 0, z: -1 }, 'South': { x: 0, y: 0, z: 1 }, 'East': { x: 1, y: 0, z: 0 }, 'West': { x: -1, y: 0, z: 0 }}
@@ -721,6 +723,34 @@
         return ret
     }
 
+    const customProps = document.getElementsByClassName("property-container-header")
+    for (let c in customProps) {
+        if (customProps[c].nodeType === 1) {
+            customProps[c].setAttribute('targetDisplay', customProps[c].style.display)
+            customProps[c].setAttribute('text', customProps[c].innerText)
+            if (customProps[c].getAttribute("open") === "true") {
+                customProps[c].innerText = '▼ ' + customProps[c].getAttribute('text')
+            } else {
+                customProps[c].innerText = '► ' + customProps[c].getAttribute('text')
+            }
+            let el = document.getElementById(customProps[c].getAttribute("targetContainer"))
+            if (el) {
+                customProps[c].setAttribute('targetDisplay', el.style.display)
+                customProps[c].addEventListener('click', (e) => {
+                    if (customProps[c].getAttribute("open") === "true") {
+                        customProps[c].setAttribute("open", false)
+                        el.style.display = 'none'
+                        customProps[c].innerText = '► ' + customProps[c].getAttribute('text')
+                    } else {
+                        customProps[c].setAttribute("open", true)
+                        el.style.display = customProps[c].getAttribute('targetDisplay')
+                        customProps[c].innerText = '▼ ' + customProps[c].getAttribute('text')
+                    }
+                })
+            }
+        }
+    }
+
     // Load initial rooms list.
     fetch('http://localhost:8080/rooms', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).then((response) => {
         return response.json()
@@ -739,6 +769,5 @@
     })
 
     refreshNavItems()
-    
 
 })()

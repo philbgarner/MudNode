@@ -215,7 +215,6 @@ h1, h2, h3, h4 {
   padding: 0.5em;
   background-color: darkslateblue;
   max-width: 95vw;
-  max-height: 60vh;
   min-height: 50vh;
   border-radius: 0.25em;
   font-family: 'Lucida Console';
@@ -285,4 +284,35 @@ h1, h2, h3, h4 {
 }
 .selected-nav {
   color: #ff0 !important;
+}
+.property-container-header {
+  width: 80%;
+  padding: 0.15em;
+  margin: 0;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  background-color: #c1c1c1;
+  border-radius: 0.15em;
+}
+.property-container-header:hover {
+  color: yellow;
+  cursor: pointer;
+}
+.custom-property-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.custom-property-container > div {
+  flex: 45%;
+  margin: 0.1em;
+}
+.custom-property-container > div > input {
+  width: 95%;
+}
+.custom-property-container > div:hover {
+  color: yellow;
+}
+.custom-property-container > .header {
+  color: white;
+  margin-bottom: 1em;
 }
