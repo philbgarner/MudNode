@@ -19,6 +19,8 @@
     const tcontainer = document.getElementById("tcontainer")
     const ocontainer = document.getElementById("ocontainer")
     const dcontainer = document.getElementById("dcontainer")
+    const ccontainer = document.getElementById("ccontainer")
+    const propertyContainer = document.getElementById("property_container")
 
     toggleButtonOpen.addEventListener('click', (e) => {
         toggleButtonOpen.style.display = 'none'
@@ -38,6 +40,7 @@
     toggleButton.click()
 
     var mapScale = 10
+    var selectedProp = null
 
     var selectedKey = ''
     var selectedRoom = ''
@@ -82,7 +85,7 @@
             suggestions.style.left = (loc.x).toFixed(2) + 'px'
             suggestions.style.top = (loc.y).toFixed(2) + `px`
             suggestions.style.display = 'block'
-            suggestions.innerHTML = `${suggestion.type}<br>${suggestion.data.reduce((prev, next) => prev + '<br/>' + next)}`
+            suggestions.innerHTML = `${suggestion.type}<br>${suggestion.data.length > 0 ? suggestion.data.reduce((prev, next) => prev + '<br/>' + next) : ''}`
             showSuggestion = true
         } else {
             suggestion.type = ''
@@ -209,6 +212,89 @@
                     refreshKeys()
                     lookup += dictionary[lookup] ? ' found.' : ' <span style="color: #f00">not found</span>.'
                     toggleSuggestions({ type: 'Key Search:', data: [lookup] }, false)
+                } else if (word.includes('[?') && !word.includes(']')) {
+                    let lookup = word.slice(2)
+                    let contextlist = ['room', 'area', 'world']
+                    let flist = []
+                    let ctype = 'Condition Contexts:'
+                    if (!lookup.includes('.')) {
+                        for (let c in contextlist) {
+                            if (lookup === '') {
+                                flist.push(contextlist[c])
+                            } else if (contextlist[c].includes(lookup)) {
+                                flist.push(contextlist[c])
+                            }
+                        }
+                        if (flist.length === 1) {
+                            ctype = 'Context: ' + flist[0] + '.'
+                        }
+                    } else {
+                        let contextPath = lookup.split('.')
+                        let operations = {
+                            'is': ['=', '<', '>', '>=', '<=', '!='],
+                            'count': ['=', '<', '>', '>=', '<=', '!='],
+                            'has': ['='],
+                            'between': ['=']
+                        }
+                        if (contextPath.length === 2) {
+                            ctype = 'Context: ' + contextPath[0] + '.' + contextPath[1]
+                            let paths = {
+                                'room': ['name', 'location', 'props', 'components', 'entities'],
+                                'area': ['name', 'props'],
+                                'world': ['date', 'time', 'season', 'day', 'month', 'year', 'ordinalday']
+                            }
+                            for (let c in paths[contextPath[0]]) {
+                                let path = paths[contextPath[0]][c]
+                                if (lookup === '') {
+                                    flist.push(path)
+                                } else if (path.includes(contextPath[1])) {
+                                    flist.push(path)
+                                }
+                            }
+                            if (flist.length === 1) {
+                                ctype = 'Context: ' + contextPath[0] + '.' + flist[0] + '.'
+                            }
+                        } else if (contextPath.length === 3) {
+                            ctype = 'Context: ' + contextPath[0] + '.' + contextPath[1] + '.' + contextPath[2]
+                            let actions = {
+                                'name': ['is'],
+                                'location': ['is'],
+                                'props': ['count', 'has'],
+                                'components': ['count', 'has'],
+                                'entities': ['count', 'has'],
+                                'date': ['is', 'between'],
+                                'time': ['is', 'between'],
+                                'season': ['is', 'between'],
+                                'day': ['is', 'between'],
+                                'month': ['is', 'between'],
+                                'year': ['is', 'between'],
+                                'ordinalday': ['is', 'between'],
+                            }
+                            for (let c in actions[contextPath[1]]) {
+                                let path = actions[contextPath[1]][c]
+                                let lookup = contextPath[2]
+                                if (lookup === '') {
+                                    flist.push(path)
+                                } else if (path.includes(lookup)) {
+                                    flist.push(path)
+                                }
+                            }
+                            if (flist.length === 1) {
+                                ctype = 'Context: ' + contextPath[0] + '.' + contextPath[1] + '.' + flist[0]
+                                let lookup = flist[0]
+                                flist = []
+                                for (let o in operations[lookup]) {
+                                    flist.push(lookup + operations[lookup][o])
+                                }
+                            }
+                            let index = lookup.search(/[(=)(!=)(<)(>)]/)
+                            if (index >= 0) {
+                                ctype = 'Context: ' + contextPath[0] + '.' + contextPath[1] + '.' + lookup
+                                flist = ['Comparison value.']
+                            }
+                        }
+                    }
+                    toggleSuggestions({ type: ctype, data: flist }, false)
                 } else if (word.includes(']')) {
                     let lookup = word.slice(2, word.length - 1)
                     filterKeys.value = lookup
@@ -481,6 +567,11 @@
         drawGrid()
     }
     
+    /**
+     * Refreshes the user interface for the room panel.
+     * @param {string} uuid The room's uuid.
+     * @returns 
+     */
     const refreshRoom = (selected) => {
         selectedRoom = selected ? selected : selectedRoom
 
@@ -599,6 +690,9 @@
     }
     
     function setupRoomEditorFields(room) {
+        if (!room) {
+            return
+        }
         const roomExits = document.getElementById('room_exits')
 
         let ret = {
@@ -607,8 +701,194 @@
             description: cloneNode(document.getElementById('room_description')),
             roomExits: roomExits,
             colour: cloneNode(document.getElementById('room_colour')),
-            newProperty: document.getElementById('new_property')
+            newProperty: cloneNode(document.getElementById('new_property')),
+            deleteProperty: cloneNode(document.getElementById('delete_property'))
         }
+        
+        const updateFields = (targetRoom) => {
+            targetRoom = targetRoom ? targetRoom : room
+            return fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uuid: targetRoom.uuid,
+                location: targetRoom.location,
+                name: targetRoom.name,
+                description: targetRoom.description,
+                exits: targetRoom.exits,
+                colour: targetRoom.colour,
+                props: targetRoom.props
+            }) })
+        }
+
+        const blurField = (room) => {
+            room.name = ret.name.innerText
+            room.description = ret.description.innerText
+            room.colour = ret.colour.value
+            room.props = 
+            updateFields(room).then((response) => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return response.json().then(v => Promise.reject(response.message))
+                }
+            }).then((data) => {
+                roomslist[data.uuid] = data
+                drawRoom(data)
+            })
+        }
+
+        propertyContainer.innerHTML = ''
+
+        for (let p in room.props) {
+            let elKey = document.createElement('div')
+            elKey.innerText = p
+            let elValue = document.createElement('div')
+            elValue.innerText = room.props[p]
+
+            elKey.addEventListener('mouseenter', (e) => {
+                elKey.style.color = 'yellow'
+                elValue.style.color = 'yellow'
+            })
+            elKey.addEventListener('mouseleave', (e) => {
+                elKey.style.color = 'black'
+                elValue.style.color = 'black'
+            })
+            elValue.addEventListener('mouseenter', (e) => {
+                elKey.style.color = 'yellow'
+                elValue.style.color = 'yellow'
+            })
+            elValue.addEventListener('mouseleave', (e) => {
+                elKey.style.color = 'black'
+                elValue.style.color = 'black'
+            })
+
+            if (!selectedProp) {
+                ret.deleteProperty.innerText = `Delete Property`
+                ret.deleteProperty.disabled = true
+            }
+
+            elKey.addEventListener('click', (e) => {
+                let elKeyWrap = document.createElement('div')
+                let elKeyEdit = document.createElement('input')
+                elKeyEdit.value = elKey.innerText
+                
+                selectedProp = p
+                if (selectedProp) {
+                    ret.deleteProperty.innerText = `Delete Property '${p}'`
+                    ret.deleteProperty.disabled = false
+                }
+
+                elKeyEdit.addEventListener('blur', (e) => {
+                    elKey.style.color = 'black'
+                    elValue.style.color = 'black'
+                    if (elKey.innerText !== elKeyEdit.value) {
+                        if (!room.props[elKeyEdit.value]) {
+                            room.props[elKey.innerText] = undefined
+                            delete room.props[elKey.innerText]
+                            elKey.innerText = elKeyEdit.value
+                            room.props[elKey.innerText] = elValue.innerText
+                            updateFields(room).then((response) => {
+                                if (response.ok) {
+                                    return response.json()
+                                } else {
+                                    return response.json().then(v => Promise.reject(response.message))
+                                }
+                            }).then((data) => {
+                                roomslist[data.uuid] = data
+                            })
+                        } else {
+                            alert(`Error: Key '${elKeyEdit.value}' already exists!`)
+                        }
+                    }
+                    propertyContainer.replaceChild(elKey, elKeyWrap)
+                })
+
+                elKeyWrap.appendChild(elKeyEdit)
+                propertyContainer.replaceChild(elKeyWrap, elKey)
+                elKeyEdit.focus()
+            })
+            elValue.addEventListener('click', (e) => {
+                let elValueWrap = document.createElement('div')
+                let elValueEdit = document.createElement('input')
+                elValueEdit.value = elValue.innerText
+                
+                selectedProp = p
+                if (selectedProp) {
+                    ret.deleteProperty.innerText = `Delete Property '${p}'`
+                    ret.deleteProperty.disabled = false
+                }
+
+                elValueEdit.addEventListener('blur', (e) => {
+                    elKey.style.color = 'black'
+                    elValue.style.color = 'black'
+                    if (elValue.innerText !== elValueEdit.value) {
+                        if (room.props[elKey.innerText] !== undefined) {
+                            elValue.innerText = elValueEdit.value
+                            room.props[elKey.innerText] = elValue.innerText
+                            updateFields(room).then((response) => {
+                                if (response.ok) {
+                                    return response.json()
+                                } else {
+                                    return response.json().then(v => Promise.reject(response.message))
+                                }
+                            }).then((data) => {
+                                roomslist[data.uuid] = data
+                            })
+                        } else {
+                            alert(`Error: Key '${elKey.innerText}' does not exist!`)
+                        }
+                    }
+                    propertyContainer.replaceChild(elValue, elValueWrap)
+                })
+
+                elValueWrap.appendChild(elValueEdit)
+                propertyContainer.replaceChild(elValueWrap, elValue)
+                elValueEdit.focus()
+            })
+            
+            propertyContainer.appendChild(elKey)
+            propertyContainer.appendChild(elValue)
+        }
+        ret.newProperty.addEventListener('click', (e) => {
+            console.log('newprop')
+            let key = prompt('Enter property name (key name):', '')
+            if (room.props[key]) {
+                alert(`Error: Key by name '${key}' already exists.`)
+            } else {
+                room.props[key] = ''
+                selectedProp = key
+                updateFields(room).then((response) => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        return response.json().then(v => Promise.reject(response.message))
+                    }
+                }).then((data) => {
+                    roomslist[data.uuid] = data
+                    refreshRoom(room.uuid)
+                })
+            }
+        })
+        ret.deleteProperty.addEventListener('click', (e) => {
+            if (selectedProp) {
+                if (room.props[selectedProp] === undefined) {
+                    alert(`Error: Cannot delete key '${selectedProp}', it does not exist.`)
+                } else {
+                    room.props[selectedProp] = undefined
+                    delete room.props[selectedProp]
+                    selectedProp = null
+                    updateFields(room).then((response) => {
+                        if (response.ok) {
+                            return response.json()
+                        } else {
+                            return response.json().then(v => Promise.reject(response.message))
+                        }
+                    }).then((data) => {
+                        roomslist[data.uuid] = data
+                        refreshRoom(room.uuid)
+                    })
+                }
+            }
+        })
 
         let directions = { 'North': { x: 0, y: 0, z: -1 }, 'South': { x: 0, y: 0, z: 1 }, 'East': { x: 1, y: 0, z: 0 }, 'West': { x: -1, y: 0, z: 0 }}
         let opposites = {
@@ -683,35 +963,6 @@
                     child.removeAttribute('useExit')
                 }
             }
-        }
-
-        const updateFields = (targetRoom) => {
-            targetRoom = targetRoom ? targetRoom : room
-            return fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                uuid: targetRoom.uuid,
-                location: targetRoom.location,
-                name: targetRoom.name,
-                description: targetRoom.description,
-                exits: targetRoom.exits,
-                colour: targetRoom.colour
-            }) })
-        }
-
-        const blurField = (room) => {
-            room.name = ret.name.innerText
-            room.description = ret.description.innerText
-            room.colour = ret.colour.value
-            updateFields(room).then((response) => {
-                if (response.ok) {
-                    return response.json()
-                } else {
-                    return response.json().then(v => Promise.reject(response.message))
-                }
-            }).then((data) => {
-                roomslist[data.uuid] = data
-                drawRoom(data)
-            })
         }
 
         if (room) {

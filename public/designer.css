@@ -306,13 +306,27 @@ h1, h2, h3, h4 {
   flex: 45%;
   margin: 0.1em;
 }
-.custom-property-container > div > input {
-  width: 95%;
-}
-.custom-property-container > div:hover {
-  color: yellow;
-}
 .custom-property-container > .header {
   color: white;
   margin-bottom: 1em;
+}
+.custom-property-container > .footer {
+  width: 100%;
+}
+.custom-property-container > .footer > button {
+  max-width: none;
+}
+#property_container {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 100%;
+  margin: 0;
+}
+#property_container > div {
+  flex: 45%;
+  margin: 0.1em;
+  height: 2em;
+}
+#property_container > div > input {
+  width: 95%;
 }

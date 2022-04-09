@@ -58,7 +58,7 @@ app.post('/dictionary', (req, res) => {
 
 app.post('/room', (req, res) => {
   if (req.body.uuid && rooms.getRoom(req.body.uuid)) {
-    let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description, exits: req.body.exits, colour: req.body.colour })
+    let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description, exits: req.body.exits, colour: req.body.colour, props: req.body.props })
     if (rm) {
       data.save()
       res.send(JSON.stringify(rm))
