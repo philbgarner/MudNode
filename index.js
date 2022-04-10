@@ -38,9 +38,9 @@ app.use(sessionParser);
 app.use(bodyParser.json())
 
 app.post('/process', (req, res) => {
-  console.log(req.body, typeof req.body.template)
   if (req.body.template && typeof req.body.template === 'string') {
-    res.send(grammar.text(req.body.template))
+    let context = req.body.context
+    res.send(grammar.processTokenMap(grammar.parseTokens(req.body.template, context), context))
     return
   }
   res.send(500)
