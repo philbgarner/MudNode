@@ -516,7 +516,9 @@
                     room: currentRoom() ? selectedRoom : null
                 }
             })}).then((response) => {
-            response.text().then((v) => ofield.innerText += v + '\n')
+            response.json().then((v) => {
+                ofield.innerHTML = v.sentenceHTML
+            })
         })
     })
 
@@ -728,7 +730,6 @@
             room.name = ret.name.innerText
             room.description = ret.description.innerText
             room.colour = ret.colour.value
-            room.props = 
             updateFields(room).then((response) => {
                 if (response.ok) {
                     return response.json()

@@ -40,7 +40,7 @@ app.use(bodyParser.json())
 app.post('/process', (req, res) => {
   if (req.body.template && typeof req.body.template === 'string') {
     let context = req.body.context
-    res.send(grammar.processTokenMap(grammar.parseTokens(req.body.template, context), context))
+    res.send(grammar.process(req.body.template, context))
     return
   }
   res.send(500)
