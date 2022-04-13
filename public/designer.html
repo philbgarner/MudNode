@@ -81,12 +81,28 @@
     <div id="roomtemplateseditor" class="paneleditor">
       <div>
         <h4>Room Template</h4>
-        <div class="property-container">
+        <div class="property-container-header" targetContainer="tcorecontainer" open="true">Core Properties</div>
+        <div class="property-container" id="tcorecontainer">
+          Template Name: <select id="roomtmp_selected"></select>
           <div>id:</div><p id="roomtmp_id" class="editor" style="color: lightgrey;"></p>
-          <div>room template name:</div><p id="roomtmp_name" class="editor" contenteditable="true"></p></p>
-          <div>potential room name:</div><p id="roomtmp_names" class="editor" contenteditable="true"></p></p>
-          <div>potential room description:</div><p id="roomtmp_descriptions" class="editor multirow" contenteditable="true"></p></p>
-          <div>potential room components:</div><p id="roomtmp_components" class="editor multirow" contenteditable="true"></p></p>
+          <div>room name template:</div><p id="roomtmp_name" class="editor" contenteditable="true"></p>
+          <div>room description template:</div><p id="roomtmp_description" class="editor multirow" contenteditable="true"></p>
+          <div>room colour:</div><input type="color" />
+          <!-- <ul id="roomslist"></ul> -->
+        </div>
+        <div class="property-container-header" targetContainer="tpropcontainer" open="true">Custom Properties</div>
+        <div id='tpropcontainer' class="custom-property-container">
+          <div class="header">key</div><div class="header">value</div>
+          <div id="tmpproperty_container">
+          </div>
+          <!-- <div><input type="text" placeholder="custom property name" value="" /></div><div><input type="text" placeholder="property value" value="" /></div> -->
+          <div class="footer"><button id="tmpnew_property">New Property</button> <button id="tmpdelete_property">Delete Property</button></div>
+        </div>
+      </div>
+      <div>
+        <div class="property-container-header" targetContainer="tcompcontainer" open="true">Components</div>
+        <div class="property-container" id="tcompcontainer">
+          <div>room components:</div><p id="roomtmp_components" class="editor multirow" contenteditable="true"></p>
           <!-- <ul id="roomslist"></ul> -->
         </div>
       </div>

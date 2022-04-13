@@ -22,6 +22,9 @@
     const ccontainer = document.getElementById("ccontainer")
     const propertyContainer = document.getElementById("property_container")
 
+    const roomtmp_name = document.getElementById("roomtmp_name")
+    const roomtmp_desc = document.getElementById("roomtmp_description")
+
     toggleButtonOpen.addEventListener('click', (e) => {
         toggleButtonOpen.style.display = 'none'
         toggleButton.style.display = 'flex'
@@ -696,6 +699,32 @@
         }
     }
     
+    function setupRoomTemplateFields(template) {
+        if (!template) {
+            return
+        }
+
+        let ret = {
+            name: roomtmp_name,
+            description: roomtmp_desc
+        }
+        
+        const updateFields = (targetRoom) => {
+            targetRoom = targetRoom ? targetRoom : room
+            return fetch('http://localhost:8080/room', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uuid: targetRoom.uuid,
+                location: targetRoom.location,
+                name: targetRoom.name,
+                description: targetRoom.description,
+                exits: targetRoom.exits,
+                colour: targetRoom.colour,
+                props: targetRoom.props
+            }) })
+        }
+
+    }
+
     function setupRoomEditorFields(room) {
         if (!room) {
             return

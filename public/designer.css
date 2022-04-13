@@ -110,6 +110,8 @@ span.token {
 }
 #dictionary > div:first-child {
   min-width: 30vw;
+  max-height: 22em;
+  overflow-y: scroll;
 }
 #dictionary ul {
   min-height: 100%;
