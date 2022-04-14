@@ -332,3 +332,13 @@ h1, h2, h3, h4 {
 #property_container > div > input {
   width: 95%;
 }
+mark {
+  background: none;
+  border-bottom: 2px darkblue dotted;
+}
+mark:hover {
+  background: darkblue;
+  color: white;
+  cursor: default;
+  border-bottom: 2px darkblue dotted;
+}

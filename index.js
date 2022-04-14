@@ -46,6 +46,16 @@ app.post('/process', (req, res) => {
   res.send(500)
 })
 
+app.post('/parse', (req, res) => {
+  if (req.body.template && typeof req.body.template === 'string') {
+    let context = req.body.context
+    let template = req.body.template
+    res.send(grammar.processTokenMap(grammar.parseTokens(template, context), context))
+    return
+  }
+  res.send(500)
+})
+
 app.post('/dictionary', (req, res) => {
   if (req.body.dictionary) {
     grammar.setDictionary(req.body.dictionary)

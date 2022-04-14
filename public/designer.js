@@ -1,6 +1,7 @@
 (() => {
 
     const suggestions = document.getElementById("suggestions")
+    const template = document.getElementById("template")
     const dKeys = document.getElementById("dKeys")
     const dValues = document.getElementById("dValues")
     const btnAddKey = document.getElementById("addKey")
