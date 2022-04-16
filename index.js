@@ -6,13 +6,15 @@ import { v4 } from 'uuid'
 import bodyParser from 'body-parser'
 import { WebSocketServer } from 'ws'
 
-import { entities, data, config, users, rooms,
+import { entities, data, config, users, rooms, grammar,
   Handler, Look, CreateRoom, ListRooms, LinkExit, Tp, DescribeRoom, DescribeMe,
   Me, Save, Reload, ListPlayers, Impersonate, CreateEntity, CreateMobile,
   MobileAddComponent, EntityAddComponent, RemoveEntity, RoomAddComponent,
   NameRoom, RoomComponentProps, DigRoom, DescribeEntity, NameMe,
-  Room, User, Player, grammar
+  Room, User, Player
 } from './lib/mudnode.js'
+
+import { api } from './api.js'
 
 const app = express();
 //
@@ -37,65 +39,8 @@ app.use(express.static('public'));
 app.use(sessionParser);
 app.use(bodyParser.json())
 
-app.post('/process', (req, res) => {
-  if (req.body.template && typeof req.body.template === 'string') {
-    let context = req.body.context
-    res.send(grammar.process(req.body.template, context))
-    return
-  }
-  res.send(500)
-})
-
-app.post('/parse', (req, res) => {
-  if (req.body.template && typeof req.body.template === 'string') {
-    let context = req.body.context
-    let template = req.body.template
-    res.send(grammar.processTokenMap(grammar.parseTokens(template, context), context))
-    return
-  }
-  res.send(500)
-})
-
-app.post('/dictionary', (req, res) => {
-  if (req.body.dictionary) {
-    grammar.setDictionary(req.body.dictionary)
-    data.save()
-    res.status(200).send()
-    return
-  }
-  res.send(grammar.dictionary)
-})
-
-app.post('/room', (req, res) => {
-  if (req.body.uuid && rooms.getRoom(req.body.uuid)) {
-    let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description, exits: req.body.exits, colour: req.body.colour, props: req.body.props })
-    if (rm) {
-      data.save()
-      res.send(JSON.stringify(rm))
-    } else {
-      res.status(500).send(`{ "message": "Error: Failed to set room ${req.body.uuid}." }`)
-    }
-  } else {
-    let room = new Room({ location: req.body.location })
-    if (rooms.addRoom(room)) {
-      data.save()
-      res.send(JSON.stringify(room))
-    } else {
-      res.status(500).send(`{ "message": "Error: Room at location (${room.location.x}, ${room.location.y}, ${room.location.z}) already exists." }`)
-    }
-  }
-})
-
-
-app.post('/rooms', (req, res) => {
-  if (req.body.rooms) {
-    rooms.setRooms(req.body.rooms)
-    data.save()
-    res.status(200).send()
-    return
-  }
-  res.send(JSON.stringify(rooms.getRooms()))
-})
+// Mount the API router.
+app.use('/api', api)
 
 app.post('/login', function (req, res) {
   //

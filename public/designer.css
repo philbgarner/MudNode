@@ -342,3 +342,11 @@ mark:hover {
   cursor: default;
   border-bottom: 2px darkblue dotted;
 }
+#error {
+  background-color: pink;
+  border-radius: 0.15em;
+  padding: 3em;
+  margin: 1em;
+  display: none;
+  font-family: 'Lucida Console';
+}
