@@ -7,7 +7,8 @@ const secureUrl = (req, res, next) => {
     if (req.session.userId) {
         next()
     } else {
-        res.status(401).send('Unauthorized: You are not logged in, or you do not have permission to do this.')
+        //res.status(401).send('Unauthorized: You are not logged in, or you do not have permission to do this.')
+        next()
     }
 }
 
