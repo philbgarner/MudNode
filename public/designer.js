@@ -62,6 +62,10 @@
     }
 
     const toggleSuggestions = (sugg, turnOff) => {
+        suggestions.style.display = 'none'
+        return
+        // TODO: Until the syntax menu can be fixed let's just disable it for now.
+
         suggestion = sugg
         if (turnOff !== undefined) {
             showSuggestion = turnOff
