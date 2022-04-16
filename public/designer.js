@@ -9,7 +9,6 @@
     const btnProcess = document.getElementById("idprocess")
     const ofield = document.getElementById("ofield")
     const filterKeys = document.getElementById("filterKeys")
-    const rcontainer = document.getElementById("rcontainer")
     const addRoom = document.getElementById("addRoom")
     const canvas = document.getElementById('canvas');
     const navitems = document.querySelectorAll('#navbar > ul > li[targetEditor]')
@@ -321,10 +320,6 @@
         return null
     }
 
-    const currentRoom = () => {
-        return roomslist[selectedRoom] ? roomslist[selectedRoom] : null
-    }
-
     const saveDictionary = () => {
         return fetch('http://localhost:8080/api/dictionary', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dictionary: dictionary }) })
     }
@@ -512,31 +507,6 @@
             })
         })
     })
-    
-    /**
-     * Refreshes the user interface for the room panel.
-     * @param {string} uuid The room's uuid.
-     * @returns 
-     */
-    const refreshRoom = (selected) => {
-        selectedRoom = selected ? selected : selectedRoom
-
-        let room = currentRoom()
-        setupRoomEditorFields(room)
-        if (room) {
-            rcontainer.querySelector('#room_id').innerText = room.uuid
-            rcontainer.querySelector('#room_name').innerText = room.name
-            rcontainer.querySelector('#room_description').innerText = room.description
-            rcontainer.querySelector('#room_location').innerText = JSON.stringify(room.location)
-            rcontainer.querySelector('#room_colour').value = room.colour
-        } else {
-            rcontainer.querySelector('#room_id').innerText = ''
-            rcontainer.querySelector('#room_name').innerText = ''
-            rcontainer.querySelector('#room_description').innerText = ''
-            rcontainer.querySelector('#room_location').innerText = ''
-            rcontainer.querySelector('#room_colour').value = '#a0a0a0'
-        }
-    }
 
     document.addEventListener('selectionchange', handleSelectionChange)
     window.addEventListener('resize', (e) => {
@@ -605,16 +575,16 @@
             return response.json()
         }
     })
-    .then((data) => {
-        roomslist = data
-        drawAllRooms()
-    })
     .catch((response) => {
         response.text().then(error => {
             const errorEl = document.getElementById("error")
             errorEl.innerText += `Error on ${response.url}:\n` + error + '\n'
             errorEl.style.display = 'block'
         })
+    })
+    .then((data) => {
+        roomslist = data
+        drawAllRooms()
     })
 
     // Load initial dictionary data.
@@ -626,16 +596,16 @@
             return response.json()
         }
     })
-    .then((data) => {
-        dictionary = data
-        refreshDictionary()
-    })
     .catch((response) => {
         response.text().then(error => {
             const errorEl = document.getElementById("error")
             errorEl.innerText += `Error on ${response.url}:\n` + error + '\n'
             errorEl.style.display = 'block'
         })
+    })
+    .then((data) => {
+        dictionary = data
+        refreshDictionary()
     })
 
 

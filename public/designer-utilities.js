@@ -32,3 +32,33 @@ function cloneNode(node) {
     old_element.parentNode.replaceChild(new_element, old_element);
     return new_element
 }
+
+const currentRoom = () => {
+    return roomslist[selectedRoom] ? roomslist[selectedRoom] : null
+}
+
+/**
+ * Refreshes the user interface for the room panel.
+ * @param {string} uuid The room's uuid.
+ * @returns 
+ */
+    const refreshRoom = (selected) => {
+    selectedRoom = selected ? selected : selectedRoom
+
+    let room = currentRoom()
+    const rcontainer = document.getElementById("rcontainer")
+    setupRoomEditorFields(room)
+    if (room) {
+        rcontainer.querySelector('#room_id').innerText = room.uuid
+        rcontainer.querySelector('#room_name').innerText = room.name
+        rcontainer.querySelector('#room_description').innerText = room.description
+        rcontainer.querySelector('#room_location').innerText = JSON.stringify(room.location)
+        rcontainer.querySelector('#room_colour').value = room.colour
+    } else {
+        rcontainer.querySelector('#room_id').innerText = ''
+        rcontainer.querySelector('#room_name').innerText = ''
+        rcontainer.querySelector('#room_description').innerText = ''
+        rcontainer.querySelector('#room_location').innerText = ''
+        rcontainer.querySelector('#room_colour').value = '#a0a0a0'
+    }
+}
