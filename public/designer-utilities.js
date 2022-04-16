@@ -26,6 +26,12 @@ function drawRoomSelection() {
     ctx.stroke()
 }
 
+/**
+ * Used to clear all set events on an element. It's OK to do this because we're only using it on leaf
+ * nodes in the tree.
+ * @param {HTMLElement} node 
+ * @returns 
+ */
 function cloneNode(node) {
     let old_element = node;
     let new_element = old_element.cloneNode(true);
@@ -33,6 +39,10 @@ function cloneNode(node) {
     return new_element
 }
 
+/**
+ * Gets the current room selected (selectedRoom string which is a room uuid)
+ * @returns Instance of Room class.
+ */
 const currentRoom = () => {
     return roomslist[selectedRoom] ? roomslist[selectedRoom] : null
 }

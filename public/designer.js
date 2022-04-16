@@ -20,9 +20,6 @@
     const dcontainer = document.getElementById("dcontainer")
     const ccontainer = document.getElementById("ccontainer")
 
-    const roomtmp_name = document.getElementById("roomtmp_name")
-    const roomtmp_desc = document.getElementById("roomtmp_description")
-
     toggleButtonOpen.addEventListener('click', (e) => {
         toggleButtonOpen.style.display = 'none'
         toggleButton.style.display = 'flex'
