@@ -255,7 +255,6 @@ function setupRoomEditorFields(room) {
         propertyContainer.appendChild(elValue)
     }
     ret.newProperty.addEventListener('click', (e) => {
-        console.log('newprop')
         let key = prompt('Enter property name (key name):', '')
         if (room.props[key]) {
             alert(`Error: Key by name '${key}' already exists.`)

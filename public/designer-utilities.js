@@ -3,11 +3,13 @@ var selectedProp = null
 
 var selectedKey = ''
 var selectedRoom = ''
+var selectedTemplate = ''
 var selectedCell = { selected: false, x: 0, y: 0 }
 var currentNavId = document.getElementsByClassName('selected-nav')[0].getAttribute('targetEditor')
 
 var dictionary = {}
 var roomslist = {}
+var roomtemplateslist = {}
 
 function findRoomAt (x, y, z) {
     for (let r in roomslist) {
@@ -47,12 +49,16 @@ const currentRoom = () => {
     return roomslist[selectedRoom] ? roomslist[selectedRoom] : null
 }
 
+const currentTemplate = () => {
+    return roomtemplateslist[selectedTemplate] ? roomtemplateslist[selectedTemplate] : null
+}
+
 /**
  * Refreshes the user interface for the room panel.
  * @param {string} uuid The room's uuid.
  * @returns 
  */
-    const refreshRoom = (selected) => {
+const refreshRoom = (selected) => {
     selectedRoom = selected ? selected : selectedRoom
 
     let room = currentRoom()
@@ -71,4 +77,13 @@ const currentRoom = () => {
         rcontainer.querySelector('#room_location').innerText = ''
         rcontainer.querySelector('#room_colour').value = '#a0a0a0'
     }
+}
+
+/**
+ * Refreshes the user interface for the room template panel.
+ */
+const refreshRoomTemplate = (selected) => {
+    selectedTemplate = selected ? selected : selectedTemplate
+    let template = 
+    setupRoomTemplateFields(template)
 }
