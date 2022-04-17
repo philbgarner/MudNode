@@ -79,7 +79,23 @@ router.post('/process', secureUrl, (req, res) => {
   })
 
   router.post('/rooms/template', secureUrl, (req, res) => {
-    // TODO: set template
+    if (req.body.id && templates.getTemplate(req.body.id)) {
+      let tm = templates.setTemplate({ id: req.body.id })
+      if (tm) {
+        data.save()
+        res.send(JSON.stringify(tm))
+      } else {
+        res.status(500).send(`{ "mesage": "Error: Failed to set template ${req.body.id}." }`)
+      }
+    } else {
+      let template = new Template({ id: req.body.id })
+      if (templates.getTemplate(req.body.id)) {
+        data.save()
+        res.send(JSON.stringify(template))
+      } else {
+        res.status(500).send(`{ "message": "Error: Template with id '${req.body.id}' not found.}`)
+      }
+    }
   })
 
   export { router as api }
