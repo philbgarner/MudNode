@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { data, rooms, grammar, templates } from './lib/mudnode.js'
+import { data, rooms, grammar, templates, RoomTemplate } from './lib/mudnode.js'
 const router = express.Router()
 
 const secureUrl = (req, res, next) => {
@@ -73,14 +73,26 @@ router.post('/process', secureUrl, (req, res) => {
   
   router.post('/rooms/templates', secureUrl, (req, res) => {
     if (req.body.templates) {
-      // TODO: set whole list of room templates.
+      templates.setTemplates(req.body.templates)
+      data.save()
+      res.status(200).send()
+      return
     }
     res.send(JSON.stringify(templates.getTemplates()))
   })
 
   router.post('/rooms/template', secureUrl, (req, res) => {
     if (req.body.id && templates.getTemplate(req.body.id)) {
-      let tm = templates.setTemplate({ id: req.body.id })
+      let tm = templates.setTemplate({
+        id: req.body.id,
+        name: req.body.name,
+        description: req.body.description,
+        colour: req.body.colour,
+        props: req.body.props,
+        components: req.body.components,
+        mobiles: req.body.mobiles,
+        entities: req.body.entities
+      })
       if (tm) {
         data.save()
         res.send(JSON.stringify(tm))
@@ -88,8 +100,17 @@ router.post('/process', secureUrl, (req, res) => {
         res.status(500).send(`{ "mesage": "Error: Failed to set template ${req.body.id}." }`)
       }
     } else {
-      let template = new Template({ id: req.body.id })
-      if (templates.getTemplate(req.body.id)) {
+      let template = new RoomTemplate({
+        id: req.body.id,
+        name: req.body.name,
+        description: req.body.description,
+        colour: req.body.colour,
+        props: req.body.props,
+        components: req.body.components,
+        mobiles: req.body.mobiles,
+        entities: req.body.entities
+      })
+      if (templates.addTemplate(template)) {
         data.save()
         res.send(JSON.stringify(template))
       } else {

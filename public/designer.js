@@ -627,9 +627,11 @@
     })
     .then((data) => {
         roomtemplateslist = data
+        let keys = Object.keys(data)
+        setupRoomTemplateFields(data[keys[0]])
     })
 
-    setupRoomTemplateFields(selectedTemplate)
+    //setupRoomTemplateFields(selectedTemplate)
 
     refreshNavItems()
 

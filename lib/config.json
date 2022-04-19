@@ -6,6 +6,7 @@
     "mobilesfile": "mobiles.json",
     "areasfile": "areas.json",
     "grammarfile": "grammar.json",
+    "saveRoomTemplates": "roomTemplates.json",
 
     "indentamt": 2,
     "autosaveTimeout": 60000,

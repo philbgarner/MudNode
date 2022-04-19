@@ -370,11 +370,9 @@ function setupRoomEditorFields(room) {
         }
     }
 
-    if (room) {
-        ret.name.addEventListener('blur', () => blurField(room))
-        ret.description.addEventListener('blur', () => blurField(room))
-        ret.colour.addEventListener('change', () => blurField(room))
-    }
+    ret.name.addEventListener('blur', () => blurField(room))
+    ret.description.addEventListener('blur', () => blurField(room))
+    ret.colour.addEventListener('change', () => blurField(room))
 
     return ret
 }

@@ -85,10 +85,9 @@
         <div class="property-container-header" targetContainer="tcorecontainer" open="true">Core Properties</div>
         <div class="property-container" id="tcorecontainer">
           Template Name: <select id="roomtmp_selected"></select><button id="new_template">New Template</button>
-          <div>id:</div><p id="roomtmp_id" class="editor" style="color: lightgrey;"></p>
           <div>room name template:</div><p id="roomtmp_name" class="editor" contenteditable="true"></p>
           <div>room description template:</div><p id="roomtmp_description" class="editor multirow" contenteditable="true"></p>
-          <div>room colour:</div><input type="color" />
+          <div>room colour:</div><input id="roomtmp_colour" type="color" />
           <!-- <ul id="roomslist"></ul> -->
         </div>
         <div class="property-container-header" targetContainer="tpropcontainer" open="true">Custom Properties</div>
@@ -107,7 +106,7 @@
         </div>
         <div class="property-container-header" targetContainer="tentitiescontainer" open="true">Entities</div>
         <div class="property-container" id="tentitiescontainer">
-          <div>mobiles:</div><p id="roomtmp_components" class="editor multirow" contenteditable="true"></p>
+          <div>mobiles:</div><p id="roomtmp_mobiles" class="editor multirow" contenteditable="true"></p>
           <div>entities:</div><p id="roomtmp_entities" class="editor multirow" contenteditable="true"></p>
         </div>
       </div>
