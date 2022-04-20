@@ -629,6 +629,7 @@
         roomtemplateslist = data
         let keys = Object.keys(data)
         setupRoomTemplateFields(data[keys[0]])
+        setupRoomEditorFields()
     })
 
     //setupRoomTemplateFields(selectedTemplate)

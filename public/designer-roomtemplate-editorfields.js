@@ -8,8 +8,26 @@ function setupRoomTemplateFields(template) {
         mobiles: cloneNode(document.getElementById("roomtmp_mobiles")),
         entities: cloneNode(document.getElementById("roomtmp_entities")),
         
+        remove_template: cloneNode(document.getElementById("remove_template")),
         new_template: cloneNode(document.getElementById("new_template"))
     }
+
+    ret.remove_template.addEventListener("click", (e) => {
+        fetch('http://localhost:8080/api/rooms/template', { method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: template.id
+            })
+        }).then((response) => {
+            if (response.ok) {
+                roomtemplateslist[template.id] = undefined
+                delete roomtemplateslist[template.id]
+                setupRoomTemplateFields(template)
+                return
+            } else {
+                alert(`Error deleting ${template.id}.`)
+            }
+        })
+    })
 
     ret.new_template.addEventListener("click", (e) => {
         let key = prompt("Enter Template Id", "")

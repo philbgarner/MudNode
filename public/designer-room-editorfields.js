@@ -96,9 +96,6 @@ function setupRoomExitField(room, el) {
 }
 
 function setupRoomEditorFields(room) {
-    if (!room) {
-        return
-    }
     const propertyContainer = document.getElementById("property_container")
     const roomExits = document.getElementById('room_exits')
 
@@ -109,9 +106,21 @@ function setupRoomEditorFields(room) {
         roomExits: roomExits,
         colour: cloneNode(document.getElementById('room_colour')),
         newProperty: cloneNode(document.getElementById('new_property')),
-        deleteProperty: cloneNode(document.getElementById('delete_property'))
+        deleteProperty: cloneNode(document.getElementById('delete_property')),
+        roomTemplate: cloneNode(document.getElementById("room_template"))
     }
-    
+
+    ret.roomTemplate.length = 0
+    for (let r in roomtemplateslist) {
+        let opt = document.createElement("option")
+        opt.innerText = roomtemplateslist[r].id
+        ret.roomTemplate.add(opt)
+    }
+
+    if (!room) {
+        return
+    }
+
     const updateFields = (targetRoom) => {
         targetRoom = targetRoom ? targetRoom : room
         return fetch('http://localhost:8080/api/room', { method: 'POST', headers: { 'Content-Type': 'application/json' },

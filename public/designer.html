@@ -73,7 +73,7 @@
       <div>
         <h4 style="display: inline-block">Map</h4> <span id="status"></span>
         <div>
-          <input type="button" value="Add Room" id="addRoom" />
+          <input type="button" value="Add Room" id="addRoom" /> from template: <select id="room_template"></select>
         </div>
         <canvas id="canvas"></canvas>
       </div>
@@ -84,7 +84,7 @@
         <h4>Room Template</h4>
         <div class="property-container-header" targetContainer="tcorecontainer" open="true">Core Properties</div>
         <div class="property-container" id="tcorecontainer">
-          Template Name: <select id="roomtmp_selected"></select><button id="new_template">New Template</button>
+          Template Name: <select id="roomtmp_selected"></select><button id="new_template">New Template</button><button id="rename_template">Rename</button><button id="remove_template">Delete</button>
           <div>room name template:</div><p id="roomtmp_name" class="editor" contenteditable="true"></p>
           <div>room description template:</div><p id="roomtmp_description" class="editor multirow" contenteditable="true"></p>
           <div>room colour:</div><input id="roomtmp_colour" type="color" />

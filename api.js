@@ -81,6 +81,16 @@ router.post('/process', secureUrl, (req, res) => {
     res.send(JSON.stringify(templates.getTemplates()))
   })
 
+  router.delete('/rooms/template', secureUrl, (req, res) => {
+    if (req.body.id && templates.getTemplate(req.body.id)) {
+      res.sendStatus(templates.removeTemplate(req.body.id) ? 200 : 500)
+      return
+    } else {
+      res.status(500).send(`{ "message": "Error: Could not delete template with id '${req.body.id}': not found.}`)
+      return
+    }
+  })
+
   router.post('/rooms/template', secureUrl, (req, res) => {
     if (req.body.id && templates.getTemplate(req.body.id)) {
       let tm = templates.setTemplate({
