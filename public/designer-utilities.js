@@ -1,5 +1,4 @@
 var mapScale = 10
-var selectedProp = null
 
 var selectedKey = ''
 var selectedRoom = ''
@@ -62,8 +61,8 @@ const refreshRoom = (selected) => {
     selectedRoom = selected ? selected : selectedRoom
 
     let room = currentRoom()
-    const rcontainer = document.getElementById("rcontainer")
     setupRoomEditorFields(room)
+    const rcontainer = document.getElementById("rcontainer")
     if (room) {
         rcontainer.querySelector('#room_id').innerText = room.uuid
         rcontainer.querySelector('#room_name').innerText = room.name

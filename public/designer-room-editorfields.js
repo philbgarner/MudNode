@@ -99,6 +99,8 @@ function setupRoomEditorFields(room) {
     const propertyContainer = document.getElementById("property_container")
     const roomExits = document.getElementById('room_exits')
 
+    let selectedProp = null
+
     let ret = {
         id: document.getElementById('room_id'),
         name: cloneNode(document.getElementById('room_name')),

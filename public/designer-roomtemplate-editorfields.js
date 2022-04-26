@@ -1,4 +1,6 @@
 function setupRoomTemplateFields(template) {
+    let selectedProp = null
+
     let ret = {
         id: cloneNode(document.getElementById("roomtmp_selected")),
         name: cloneNode(document.getElementById("roomtmp_name")),
@@ -9,7 +11,9 @@ function setupRoomTemplateFields(template) {
         entities: cloneNode(document.getElementById("roomtmp_entities")),
         
         remove_template: cloneNode(document.getElementById("remove_template")),
-        new_template: cloneNode(document.getElementById("new_template"))
+        new_template: cloneNode(document.getElementById("new_template")),
+        new_property: cloneNode(document.getElementById("tmpnew_property")),
+        delete_property: cloneNode(document.getElementById("tmpdelete_property"))
     }
 
     ret.remove_template.addEventListener("click", (e) => {
@@ -84,6 +88,15 @@ function setupRoomTemplateFields(template) {
         return
     }
     
+    ret.new_property.addEventListener('click', (e) => {
+        let key = prompt("Property name:", "")
+        if (key) {
+            roomtemplateslist[template.id].props[key] = ''
+            setupRoomTemplateFields(roomtemplateslist[template.id])
+        }
+        return
+    })
+
     ret.id.value = template.id
     ret.name.innerText = template.name
     ret.description.innerText = template.description
@@ -132,6 +145,121 @@ function setupRoomTemplateFields(template) {
     ret.components.addEventListener('blur', (e) => blurField(template))
     ret.mobiles.addEventListener('blur', (e) => blurField(template))
     ret.entities.addEventListener('blur', (e) => blurField(template))
+
+    // Update Properties Elements
+    const propertyContainer = document.getElementById('tmpproperty_container')
+    let props = roomtemplateslist[template.id].props
+    if (props) {
+        let propkeys = Object.keys(props)
+        for (let pk in propkeys) {
+            let key = propkeys[pk]
+            let elKey = document.createElement('div')
+            let elValue = document.createElement('div')
+            elKey.innerText = key
+            elValue.innerText = props[key]
+
+            elKey.addEventListener('mouseenter', (e) => {
+                elKey.style.color = 'yellow'
+                elValue.style.color = 'yellow'
+            })
+            elKey.addEventListener('mouseleave', (e) => {
+                elKey.style.color = 'black'
+                elValue.style.color = 'black'
+            })
+            elValue.addEventListener('mouseenter', (e) => {
+                elKey.style.color = 'yellow'
+                elValue.style.color = 'yellow'
+            })
+            elValue.addEventListener('mouseleave', (e) => {
+                elKey.style.color = 'black'
+                elValue.style.color = 'black'
+            })
+
+            elKey.addEventListener('click', (e) => {
+                let elKeyWrap = document.createElement('div')
+                let elKeyEdit = document.createElement('input')
+                elKeyEdit.value = elKey.innerText
+                
+                selectedProp = key
+                if (selectedProp) {
+                    ret.delete_property.innerText = `Delete Property '${key}'`
+                    ret.delete_property.disabled = false
+                }
+    
+                elKeyEdit.addEventListener('blur', (e) => {
+                    elKey.style.color = 'black'
+                    elValue.style.color = 'black'
+                    if (elKey.innerText !== elKeyEdit.value) {
+                        if (!template.props[elKeyEdit.value]) {
+                            template.props[elKey.innerText] = undefined
+                            delete template.props[elKey.innerText]
+                            elKey.innerText = elKeyEdit.value
+                            template.props[elKey.innerText] = elValue.innerText
+                            updateFields(template).then((response) => {
+                                if (response.ok) {
+                                    return response.json()
+                                } else {
+                                    return response.json().then(v => Promise.reject(response.message))
+                                }
+                            }).then((data) => {
+                                roomtemplateslist[data.id] = data
+                            })
+                        } else {
+                            alert(`Error: Key '${elKeyEdit.value}' already exists!`)
+                        }
+                    }
+                    propertyContainer.replaceChild(elKey, elKeyWrap)
+                })
+    
+                elKeyWrap.appendChild(elKeyEdit)
+                propertyContainer.replaceChild(elKeyWrap, elKey)
+                elKeyEdit.focus()
+            })
+            elValue.addEventListener('click', (e) => {
+                let elValueWrap = document.createElement('div')
+                let elValueEdit = document.createElement('div')
+                elValueEdit.innerText = elValue.innerText
+                elValueEdit.classList.add("editor")
+                elValueEdit.contentEditable = true
+                
+                selectedProp = key
+                if (selectedProp) {
+                    ret.delete_property.innerText = `Delete Property '${key}'`
+                    ret.delete_property.disabled = false
+                }
+    
+                elValueEdit.addEventListener('blur', (e) => {
+                    elKey.style.color = 'black'
+                    elValue.style.color = 'black'
+                    if (elValue.innerText !== elValueEdit.innerText) {
+                        if (template.props[elKey.innerText] !== undefined) {
+                            elValue.innerText = elValueEdit.innerText
+                            template.props[elKey.innerText] = elValue.innerText
+                            updateFields(template).then((response) => {
+                                if (response.ok) {
+                                    return response.json()
+                                } else {
+                                    return response.json().then(v => Promise.reject(response.message))
+                                }
+                            }).then((data) => {
+                                roomtemplateslist[data.id] = data
+                            })
+                        } else {
+                            alert(`Error: Key '${elKey.innerText}' does not exist!`)
+                        }
+                    }
+                    propertyContainer.replaceChild(elValue, elValueWrap)
+                })
+    
+                elValueWrap.appendChild(elValueEdit)
+                propertyContainer.replaceChild(elValueWrap, elValue)
+                elValueEdit.focus()
+            })
+
+            propertyContainer.appendChild(elKey)
+            propertyContainer.appendChild(elValue)
+        }
+    }
 
     return ret
 }
