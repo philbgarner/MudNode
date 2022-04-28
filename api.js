@@ -1,6 +1,7 @@
 import express from 'express'
 
-import { data, rooms, grammar, templates, RoomTemplate } from './lib/mudnode.js'
+import { data, rooms, Room, grammar, templates, RoomTemplate } from './lib/mudnode.js'
+import { getRoomByLocation } from './lib/rooms.js'
 const router = express.Router()
 
 const secureUrl = (req, res, next) => {
@@ -42,21 +43,31 @@ router.post('/process', secureUrl, (req, res) => {
   })
   
   router.post('/room', secureUrl, (req, res) => {
-    if (req.body.uuid && rooms.getRoom(req.body.uuid)) {
-      let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description, exits: req.body.exits, colour: req.body.colour, props: req.body.props })
-      if (rm) {
-        data.save()
-        res.send(JSON.stringify(rm))
-      } else {
-        res.status(500).send(`{ "message": "Error: Failed to set room ${req.body.uuid}." }`)
-      }
-    } else {
-      let room = new Room({ location: req.body.location })
-      if (rooms.addRoom(room)) {
-        data.save()
-        res.send(JSON.stringify(room))
+    if (req.body.templateid && templates.getTemplate(req.body.templateid)) {
+      if (!getRoomByLocation(req.body.location)) {
+        let template = new RoomTemplate(req.body)
+        res.send(JSON.stringify(template.GenerateRoom()))
       } else {
         res.status(500).send(`{ "message": "Error: Room at location (${room.location.x}, ${room.location.y}, ${room.location.z}) already exists." }`)
+      }
+    } else {
+      if (req.body.uuid && rooms.getRoom(req.body.uuid)) {
+        let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description, exits: req.body.exits, colour: req.body.colour, props: req.body.props })
+        if (rm) {
+          data.save()
+          res.send(JSON.stringify(rm))
+        } else {
+          res.status(500).send(`{ "message": "Error: Failed to set room ${req.body.uuid}." }`)
+        }
+      }
+      else {
+        let room = new Room({ location: req.body.location })
+        if (rooms.addRoom(room)) {
+          data.save()
+          res.send(JSON.stringify(room))
+        } else {
+          res.status(500).send(`{ "message": "Error: Room at location (${room.location.x}, ${room.location.y}, ${room.location.z}) already exists." }`)
+        }
       }
     }
   })

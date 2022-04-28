@@ -518,7 +518,15 @@
     })
 
     addRoom.addEventListener('click', (e) => {
-        fetch('http://localhost:8080/api/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: { x: selectedCell.x, y: 0, z: selectedCell.y } }) })
+        let roomTemplate = cloneNode(document.getElementById("room_template"))
+        if (!roomTemplate.value) {
+            return false
+        }
+        selectedTemplate = roomTemplate.value
+        let data = roomtemplateslist[selectedTemplate]
+        data.templateid = selectedTemplate
+        data.location = { x: selectedCell.x, y: 0, z: selectedCell.y }
+        fetch('http://localhost:8080/api/room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         .then((response) => {
             if (response.ok) {
                 return response.json()
