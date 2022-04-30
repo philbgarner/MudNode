@@ -100,7 +100,7 @@ function setupRoomEditorFields(room) {
     const roomExits = document.getElementById('room_exits')
 
     let selectedProp = null
-
+console.log('selectedTemplate', selectedTemplate)
     let ret = {
         id: document.getElementById('room_id'),
         name: cloneNode(document.getElementById('room_name')),
@@ -118,6 +118,10 @@ function setupRoomEditorFields(room) {
         opt.innerText = roomtemplateslist[r].id
         ret.roomTemplate.add(opt)
     }
+    ret.roomTemplate.value = selectedTemplate
+    ret.roomTemplate.addEventListener('change', (e) => {
+        selectedTemplate = e.target.value
+    })
 
     if (!room) {
         return

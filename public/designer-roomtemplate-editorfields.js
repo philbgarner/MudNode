@@ -148,6 +148,7 @@ function setupRoomTemplateFields(template) {
 
     // Update Properties Elements
     const propertyContainer = document.getElementById('tmpproperty_container')
+    propertyContainer.innerHTML = ''
     let props = roomtemplateslist[template.id].props
     if (props) {
         let propkeys = Object.keys(props)

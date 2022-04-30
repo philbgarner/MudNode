@@ -522,7 +522,6 @@
         if (!roomTemplate.value) {
             return false
         }
-        selectedTemplate = roomTemplate.value
         let data = roomtemplateslist[selectedTemplate]
         data.templateid = selectedTemplate
         data.location = { x: selectedCell.x, y: 0, z: selectedCell.y }
