@@ -100,7 +100,6 @@ function setupRoomEditorFields(room) {
     const roomExits = document.getElementById('room_exits')
 
     let selectedProp = null
-console.log('selectedTemplate', selectedTemplate)
     let ret = {
         id: document.getElementById('room_id'),
         name: cloneNode(document.getElementById('room_name')),

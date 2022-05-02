@@ -9,6 +9,7 @@ var currentNavId = document.getElementsByClassName('selected-nav')[0].getAttribu
 var dictionary = {}
 var roomslist = {}
 var roomtemplateslist = {}
+var mobslist = {}
 
 function findRoomAt (x, y, z) {
     for (let r in roomslist) {

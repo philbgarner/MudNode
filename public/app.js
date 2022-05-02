@@ -44,7 +44,8 @@
     }
   
     function showMessage(response) {
-      messages.textContent += `\n${response.message}`
+      //messages.textContent += `\n${response.message}`
+      messages.innerHTML += `\n${response.message}`
       messages.scrollTop = messages.scrollHeight
     }
 

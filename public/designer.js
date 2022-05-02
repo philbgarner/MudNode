@@ -595,6 +595,26 @@
         drawAllRooms()
     })
 
+    // Mobile templates list.
+    fetch('http://localhost:8080/api/mobiles', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+    .then((response) => {
+        if (!response.ok) {
+            return Promise.reject(response)
+        } else {
+            return response.json()
+        }
+    })
+    .catch((response) => {
+        response.text().then(error => {
+            const errorEl = document.getElementById("error")
+            errorEl.innerText += `Error on ${response.url}:\n` + error + '\n'
+            errorEl.style.display = 'block'
+        })
+    })
+    .then((data) => {
+        mobslist = data
+    })
+
     // Load initial dictionary data.
     fetch('http://localhost:8080/api/dictionary', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
     .then((response) => {

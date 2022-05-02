@@ -1,4 +1,5 @@
 import express from 'express'
+import entities, { getMobiles } from './lib/entities.js'
 
 import { data, rooms, Room, grammar, templates, RoomTemplate } from './lib/mudnode.js'
 import { getRoomByLocation } from './lib/rooms.js'
@@ -70,6 +71,16 @@ router.post('/process', secureUrl, (req, res) => {
         }
       }
     }
+  })
+
+  router.post('/mobiles', secureUrl, (req, res) => {
+    if (req.body.mobiles) {
+      entities.setMobiles(req.body.mobiles)
+      data.save()
+      res.status(200).send()
+      return
+    }
+    res.send(JSON.stringify(entities.getMobiles()))
   })
   
   router.post('/rooms', secureUrl, (req, res) => {

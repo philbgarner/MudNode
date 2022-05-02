@@ -121,6 +121,23 @@
     <div id="mobtemplateseditor" class="paneleditor">
       <div>
         <h4>Mob Template</h4>
+        <select id="mobtmp_selected"></select><button id="mobtmp_new">New Mobile</button><button id="mobtmp_delete">Delete Mobile</button>
+        <div class="property-container-header" targetContainer="mcorecontainer" open="true">Core Properties</div>
+        <div class="property-container" id="mcorecontainer">
+          <div>mobile name:</div><p id="mobtmp_name" class="editor" contenteditable="true"></p>
+          <div>mobile short description:</div><p id="mobtmp_short_description" class="editor" contenteditable="true"></p>
+          <div>mobile description:</div><p id="mobtmp_description" class="editor multirow" contenteditable="true"></p>
+          <div>mobile race:</div><p id="mobtmp_race" class="editor" contenteditable="true"></p>
+          <div>mobile size:</div><p id="mobtmp_race" class="editor" contenteditable="true"></p>
+          <div>mobile age:</div><p id="mobtmp_race" class="editor" contenteditable="true"></p>
+        </div>
+        <div class="property-container-header" targetContainer="mpropcontainer" open="true">Custom Properties</div>
+        <div id='mpropcontainer' class="custom-property-container">
+          <div class="header">key</div><div class="header">value</div>
+          <div class="property-prop-container">
+          </div>
+          <div class="footer"><button>New Property</button> <button>Delete Property</button></div>
+        </div>
       </div>
     </div>
 
@@ -131,9 +148,11 @@
     </div>    
 
     <div id="suggestions"></div>
+    <script src="designer-control-editprops.js"></script>
     <script src="designer-utilities.js"></script>
     <script src="designer-room-editorfields.js"></script>
     <script src="designer-roomtemplate-editorfields.js"></script>
+    <script src="designer-mobtemplates-editorfields.js"></script>
     <script src="designer.js"></script>
   </body>
 </html>
