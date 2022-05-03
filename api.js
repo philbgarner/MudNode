@@ -1,7 +1,5 @@
 import express from 'express'
-import entities, { getMobiles } from './lib/entities.js'
-
-import { data, rooms, Room, grammar, templates, RoomTemplate } from './lib/mudnode.js'
+import { entities, data, rooms, Room, grammar, templates, RoomTemplate, MobileTemplate } from './lib/mudnode.js'
 import { getRoomByLocation } from './lib/rooms.js'
 const router = express.Router()
 
@@ -73,7 +71,7 @@ router.post('/process', secureUrl, (req, res) => {
     }
   })
 
-  router.post('/mobile/templates', secureUrl, (req, res) => {
+  router.post('/mobiles', secureUrl, (req, res) => {
     if (req.body.mobiles) {
       entities.setMobiles(req.body.mobiles)
       data.save()
@@ -83,10 +81,35 @@ router.post('/process', secureUrl, (req, res) => {
     res.send(JSON.stringify(entities.getMobiles()))
   })
 
-  router.post('/mobile/template', secureUrl, (req, res) => {
-    if (req.body.mobileid && !mobiles.getMobiles(req.body.mobileid)) {
-      let mob = new MobileTemplate()
-      entities.addMobile()
+  router.post('/mobiles/templates', secureUrl, (req, res) => {
+    if (req.body.mobiles) {
+      entities.setMobiles(req.body.mobiles)
+      data.save()
+      res.status(200).send()
+      return
+    }
+    res.send(JSON.stringify(entities.getMobiles()))
+  })
+
+  router.post('/mobiles/template', secureUrl, (req, res) => {
+    if (req.body.id && !templates.getMobileTemplate(req.body.id)) {
+      let template = new MobileTemplate({
+        id: req.body.id,
+        name: req.body.name,
+        description: req.body.description,
+        shortDescription: req.body.shortDescription,
+        race: req.body.race,
+        size: req.body.size,
+        age: req.body.age,
+        props: req.body.props,
+        components: req.body.components,
+      })
+      if (templates.addMobileTemplate(req.body)) {
+        data.save()
+        res.send(JSON.stringify(template))
+      } else {
+        res.status(500).send(`{ "message": "Error: Template with id '${req.body.id}' not found.}`)
+      }
     }
   })
   
@@ -107,7 +130,7 @@ router.post('/process', secureUrl, (req, res) => {
       res.status(200).send()
       return
     }
-    res.send(JSON.stringify(templates.getTemplates()))
+    res.send(JSON.stringify(templates.getRoomTemplates()))
   })
 
   router.delete('/rooms/template', secureUrl, (req, res) => {
@@ -121,8 +144,8 @@ router.post('/process', secureUrl, (req, res) => {
   })
 
   router.post('/rooms/template', secureUrl, (req, res) => {
-    if (req.body.id && templates.getTemplate(req.body.id)) {
-      let tm = templates.setTemplate({
+    if (req.body.id && templates.getRoomTemplate(req.body.id)) {
+      let tm = templates.setRoomTemplate({
         id: req.body.id,
         name: req.body.name,
         description: req.body.description,
@@ -149,7 +172,7 @@ router.post('/process', secureUrl, (req, res) => {
         mobiles: req.body.mobiles,
         entities: req.body.entities
       })
-      if (templates.addTemplate(template)) {
+      if (templates.addRoomTemplate(template)) {
         data.save()
         res.send(JSON.stringify(template))
       } else {
