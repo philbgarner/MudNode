@@ -9,7 +9,7 @@ var currentNavId = document.getElementsByClassName('selected-nav')[0].getAttribu
 var dictionary = {}
 var roomslist = {}
 var roomtemplateslist = {}
-var mobslist = {}
+var mobstemplatelist = {}
 
 function findRoomAt (x, y, z) {
     for (let r in roomslist) {
@@ -77,13 +77,4 @@ const refreshRoom = (selected) => {
         rcontainer.querySelector('#room_location').innerText = ''
         rcontainer.querySelector('#room_colour').value = '#a0a0a0'
     }
-}
-
-/**
- * Refreshes the user interface for the room template panel.
- */
-const refreshRoomTemplate = (selected) => {
-    selectedTemplate = selected ? selected : selectedTemplate
-    let template = 
-    setupRoomTemplateFields(template)
 }

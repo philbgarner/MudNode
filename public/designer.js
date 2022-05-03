@@ -596,7 +596,7 @@
     })
 
     // Mobile templates list.
-    fetch('http://localhost:8080/api/mobiles', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+    fetch('http://localhost:8080/api/mobiles/templates', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
     .then((response) => {
         if (!response.ok) {
             return Promise.reject(response)
@@ -612,9 +612,10 @@
         })
     })
     .then((data) => {
-        mobslist = data
-        if (data.length > 0) {
-            setupMobileEditorFields(data[0])
+        mobstemplatelist = data
+        let keys = Object.keys(data)
+        if (keys.length > 0) {
+            setupMobileEditorFields(data[keys[0]])
         } else {
             setupMobileEditorFields()
         }
@@ -663,9 +664,7 @@
         setupRoomTemplateFields(data[keys[0]])
         setupRoomEditorFields()
     })
-
-    //setupRoomTemplateFields(selectedTemplate)
-    
+   
     refreshNavItems()
 
 })()

@@ -88,7 +88,7 @@ router.post('/process', secureUrl, (req, res) => {
       res.status(200).send()
       return
     }
-    res.send(JSON.stringify(entities.getMobiles()))
+    res.send(JSON.stringify(templates.getMobileTemplates()))
   })
 
   router.post('/mobiles/template', secureUrl, (req, res) => {
