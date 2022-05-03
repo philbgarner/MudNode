@@ -613,6 +613,11 @@
     })
     .then((data) => {
         mobslist = data
+        if (data.length > 0) {
+            setupMobileEditorFields(data[0])
+        } else {
+            setupMobileEditorFields()
+        }
     })
 
     // Load initial dictionary data.
@@ -660,7 +665,7 @@
     })
 
     //setupRoomTemplateFields(selectedTemplate)
-
+    
     refreshNavItems()
 
 })()

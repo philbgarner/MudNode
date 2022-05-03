@@ -73,7 +73,7 @@ router.post('/process', secureUrl, (req, res) => {
     }
   })
 
-  router.post('/mobiles', secureUrl, (req, res) => {
+  router.post('/mobile/templates', secureUrl, (req, res) => {
     if (req.body.mobiles) {
       entities.setMobiles(req.body.mobiles)
       data.save()
@@ -81,6 +81,13 @@ router.post('/process', secureUrl, (req, res) => {
       return
     }
     res.send(JSON.stringify(entities.getMobiles()))
+  })
+
+  router.post('/mobile/template', secureUrl, (req, res) => {
+    if (req.body.mobileid && !mobiles.getMobiles(req.body.mobileid)) {
+      let mob = new MobileTemplate()
+      entities.addMobile()
+    }
   })
   
   router.post('/rooms', secureUrl, (req, res) => {

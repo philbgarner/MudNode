@@ -1,9 +1,4 @@
 function setupMobileEditorFields(mobile) {
-
-    if (!mobile) {
-        return false
-    }
-
     let element = document.getElementById("mpropcontainer")
     let ret = {
         id: document.getElementById("mobile_id"),
@@ -11,9 +6,11 @@ function setupMobileEditorFields(mobile) {
         newMobile: cloneNode(document.getElementById("mobtmp_new")),
         deleteMobile: cloneNode(document.getElementById("mobtmp_delete")),
         element: element,
+        newProperty: cloneNode(element.querySelectorAll('.footer > button')[0]),
+        delProperty: cloneNode(element.querySelectorAll('.footer > button')[1]),
         props: EditPropsList({
-            container: element.querySelector(`.${property-prop-container}`),
-            props: mobile.props
+            element: element.querySelector(`.property-prop-container`),
+            props: mobile && mobile.props ? mobile.props : {}
         })
     }
 
@@ -23,6 +20,15 @@ function setupMobileEditorFields(mobile) {
             
         }
     })
+
+    if (!mobile) {
+        return false
+    }
+   
+    ret.newProperty.addEventListener('click', (e) => {
+        console.log(e)
+    })
+
 
     return ret
 }
