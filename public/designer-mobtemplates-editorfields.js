@@ -86,7 +86,52 @@ function setupMobileEditorFields(mobile) {
     ret.size.innerText = mobile.size
     ret.age.innerText = mobile.age
 
-   
+    function updateFields(mobTemplate) {
+        return fetch('http://localhost:8080/api/mobiles/template', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: mobTemplate.id,
+                name: mobTemplate.name,
+                shortDescription: mobTemplate.shortDescription,
+                description: mobTemplate.description,
+                race: mobTemplate.race,
+                size: mobTemplate.size,
+                age: mobTemplate.age,
+                props: mobTemplate.props,
+                components: mobTemplate.components
+            })
+        })
+    }
+
+    function blurField(template) {
+        template.id = ret.id.innerText
+        template.name = ret.name.innerText
+        template.shortDescription = ret.shortDescription.innerText
+        template.description = ret.description.innerText
+        template.race = ret.race.innerText
+        template.size = ret.size.innerText
+        template.age = ret.age.innerText
+        template.props = mobile.props
+        template.components = mobile.components
+        console.log('blurfield', template)
+        updateFields(template).then((response) => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                return response.json().then(v => Promise.reject(response.message))
+            }
+        }).then((data) => {
+            mobstemplatelist[data.id] = data
+        })
+    }
+
+    ret.name.addEventListener('blur', (e) => blurField(mobile))
+    ret.shortDescription.addEventListener('blur', (e) => blurField(mobile))
+    ret.description.addEventListener('blur', (e) => blurField(mobile))
+    ret.race.addEventListener('blur', (e) => blurField(mobile))
+    ret.size.addEventListener('blur', (e) => blurField(mobile))
+    ret.age.addEventListener('blur', (e) => blurField(mobile))
+
     ret.newProperty.addEventListener('click', (e) => {
         console.log(e)
     })

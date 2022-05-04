@@ -92,24 +92,31 @@ router.post('/process', secureUrl, (req, res) => {
   })
 
   router.post('/mobiles/template', secureUrl, (req, res) => {
+    let template = new MobileTemplate({
+      id: req.body.id,
+      name: req.body.name,
+      description: req.body.description,
+      shortDescription: req.body.shortDescription,
+      race: req.body.race,
+      size: req.body.size,
+      age: req.body.age,
+      props: req.body.props,
+      components: req.body.components,
+    })
     if (req.body.id && !templates.getMobileTemplate(req.body.id)) {
-      let template = new MobileTemplate({
-        id: req.body.id,
-        name: req.body.name,
-        description: req.body.description,
-        shortDescription: req.body.shortDescription,
-        race: req.body.race,
-        size: req.body.size,
-        age: req.body.age,
-        props: req.body.props,
-        components: req.body.components,
-      })
-      if (templates.addMobileTemplate(req.body)) {
+      if (templates.addMobileTemplate(template)) {
         data.save()
         res.send(JSON.stringify(template))
       } else {
         res.status(500).send(`{ "message": "Error: Template with id '${req.body.id}' not found.}`)
       }
+    } else if (req.body.id) {
+      if (templates.setMobileTemplate(template)) {
+        data.save()
+        res.send(JSON.stringify(template))
+      } else {
+        res.status(500).send(`{ "message": "Error: Failed to update mobile template '${req.body.id}'.}`)
+      }      
     }
   })
   
