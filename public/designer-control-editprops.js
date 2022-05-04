@@ -1,8 +1,11 @@
-const EditPropsList = (params) => {
+function EditPropsList(params, updateFields, blurField) {
+    this.updateFields = updateFields
+    this.blurField = blurField
+
     let container = params.element
     container.innerHTML = ''
-    
-    let props = params.props
+
+    let props = params.entity ? params.entity.props : {}
     let propkeys = Object.keys(props)
     for (let pk in propkeys) {
         let key = propkeys[pk]
@@ -14,30 +17,32 @@ const EditPropsList = (params) => {
         elKey.addEventListener('mouseenter', (e) => {
             elKey.style.color = 'yellow'
             elValue.style.color = 'yellow'
+            elKey.style.backgroundColor = 'rgba(106, 106, 106, 0.51)'
+            elValue.style.backgroundColor = 'rgba(106, 106, 106, 0.51)'
         })
         elKey.addEventListener('mouseleave', (e) => {
             elKey.style.color = 'black'
             elValue.style.color = 'black'
+            elKey.style.backgroundColor = 'unset'
+            elValue.style.backgroundColor = 'unset'
         })
         elValue.addEventListener('mouseenter', (e) => {
             elKey.style.color = 'yellow'
             elValue.style.color = 'yellow'
+            elKey.style.backgroundColor = 'rgba(106, 106, 106, 0.51)'
+            elValue.style.backgroundColor = 'rgba(106, 106, 106, 0.51)'
         })
         elValue.addEventListener('mouseleave', (e) => {
             elKey.style.color = 'black'
             elValue.style.color = 'black'
+            elKey.style.backgroundColor = 'unset'
+            elValue.style.backgroundColor = 'unset'
         })
 
         elKey.addEventListener('click', (e) => {
             let elKeyWrap = document.createElement('div')
             let elKeyEdit = document.createElement('input')
             elKeyEdit.value = elKey.innerText
-            
-            selectedProp = key
-            if (selectedProp) {
-                ret.delete_property.innerText = `Delete Property '${key}'`
-                ret.delete_property.disabled = false
-            }
 
             elKeyEdit.addEventListener('blur', (e) => {
                 elKey.style.color = 'black'
@@ -48,15 +53,7 @@ const EditPropsList = (params) => {
                         delete props[elKey.innerText]
                         elKey.innerText = elKeyEdit.value
                         props[elKey.innerText] = elValue.innerText
-                        updateFields(template).then((response) => {
-                            if (response.ok) {
-                                return response.json()
-                            } else {
-                                return response.json().then(v => Promise.reject(response.message))
-                            }
-                        }).then((data) => {
-                            roomtemplateslist[data.id] = data
-                        })
+                        this.blurField(params.entity)
                     } else {
                         alert(`Error: Key '${elKeyEdit.value}' already exists!`)
                     }
@@ -74,12 +71,6 @@ const EditPropsList = (params) => {
             elValueEdit.innerText = elValue.innerText
             elValueEdit.classList.add("editor")
             elValueEdit.contentEditable = true
-            
-            selectedProp = key
-            if (selectedProp) {
-                ret.delete_property.innerText = `Delete Property '${key}'`
-                ret.delete_property.disabled = false
-            }
 
             elValueEdit.addEventListener('blur', (e) => {
                 elKey.style.color = 'black'
@@ -88,15 +79,8 @@ const EditPropsList = (params) => {
                     if (props[elKey.innerText] !== undefined) {
                         elValue.innerText = elValueEdit.innerText
                         props[elKey.innerText] = elValue.innerText
-                        updateFields(template).then((response) => {
-                            if (response.ok) {
-                                return response.json()
-                            } else {
-                                return response.json().then(v => Promise.reject(response.message))
-                            }
-                        }).then((data) => {
-                            roomtemplateslist[data.id] = data
-                        })
+                        console.log('blur on', elValue.innerText)
+                        blurField(params.entity)
                     } else {
                         alert(`Error: Key '${elKey.innerText}' does not exist!`)
                     }
@@ -111,5 +95,16 @@ const EditPropsList = (params) => {
 
         container.appendChild(elKey)
         container.appendChild(elValue)
+    }
+    return {
+        entity: params.entity,
+        element: container,
+        addProp: () => {
+            let key = prompt('Property Name:')
+            if (!props[key]) {
+                props[key] = ''
+                params.refresh(params.entity ? params.entity : null)
+            }
+        }
     }
 }

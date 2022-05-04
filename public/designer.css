@@ -327,8 +327,9 @@ h1, h2, h3, h4 {
 }
 .property-prop-container > div {
   flex: 45%;
-  margin: 0.1em;
+  margin: 0em;
   height: 2em;
+  cursor: pointer;
 }
 .property-prop-container > div > input {
   width: 95%;

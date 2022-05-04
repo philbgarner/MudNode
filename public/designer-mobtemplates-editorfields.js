@@ -14,39 +14,21 @@ function setupMobileEditorFields(mobile) {
         element: element,
         newProperty: cloneNode(element.querySelectorAll('.footer > button')[0]),
         delProperty: cloneNode(element.querySelectorAll('.footer > button')[1]),
-        props: EditPropsList({
-            element: element.querySelector(`.property-prop-container`),
-            props: mobile && mobile.props ? mobile.props : {}
-        })
     }
-
+    ret.props = EditPropsList({
+            entity: mobile,
+            element: element.querySelector(`.property-prop-container`),
+            refresh: () => { setupMobileEditorFields(mobile) },
+            update: () => { blurField(mobile) },
+        }, updateFields, blurField)
     ret.newMobile.addEventListener('click', (e) => {
         let key = prompt("New Mobile Name", "")
         if (mobstemplatelist[key]) {
             alert(`Error: Template Id of ${key} already exists.`)
         } else {
-            let mobTemplate = {
-                id: key,
-                // name: ret.name.innerText,
-                // shortDescription: ret.shortDescription.innerText,
-                // description: ret.description.innerText,
-                // race: ret.race.innerText,
-                // size: ret.size.innerText,
-                // age: ret.age.innerText,
-                props: {},
-                components: [],
-            }
             fetch('http://localhost:8080/api/mobiles/template', { method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: key,
-                    // name: mobTemplate.name,
-                    // shortDescription: mobTemplate.shortDescription,
-                    // description: mobTemplate.description,
-                    // race: mobTemplate.race,
-                    // size: mobTemplate.size,
-                    // age: mobTemplate.age,
-                    // props: mobTemplate.props,
-                    // components: mobTemplate.components,
+                    id: key
                 })
             })
             .then((response) => {
@@ -76,7 +58,6 @@ function setupMobileEditorFields(mobile) {
     if (!mobile) {
         return false
     }
-
     ret.selected.value = mobile.id
     ret.id.innerText = mobile.id
     ret.name.innerText = mobile.name
@@ -104,6 +85,7 @@ function setupMobileEditorFields(mobile) {
     }
 
     function blurField(template) {
+        console.log('blurField', template)
         template.id = ret.id.innerText
         template.name = ret.name.innerText
         template.shortDescription = ret.shortDescription.innerText
@@ -113,7 +95,6 @@ function setupMobileEditorFields(mobile) {
         template.age = ret.age.innerText
         template.props = mobile.props
         template.components = mobile.components
-        console.log('blurfield', template)
         updateFields(template).then((response) => {
             if (response.ok) {
                 return response.json()
@@ -133,7 +114,8 @@ function setupMobileEditorFields(mobile) {
     ret.age.addEventListener('blur', (e) => blurField(mobile))
 
     ret.newProperty.addEventListener('click', (e) => {
-        console.log(e)
+        ret.props.addProp()
+        blurField(mobile)
     })
 
 
