@@ -21,6 +21,7 @@ function setupMobileEditorFields(mobile) {
             refresh: () => { setupMobileEditorFields(mobile) },
             update: () => { blurField(mobile) },
         }, updateFields, blurField)
+
     ret.newMobile.addEventListener('click', (e) => {
         let key = prompt("New Mobile Name", "")
         if (mobstemplatelist[key]) {
@@ -85,7 +86,6 @@ function setupMobileEditorFields(mobile) {
     }
 
     function blurField(template) {
-        console.log('blurField', template)
         template.id = ret.id.innerText
         template.name = ret.name.innerText
         template.shortDescription = ret.shortDescription.innerText

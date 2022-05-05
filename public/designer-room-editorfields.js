@@ -96,7 +96,7 @@ function setupRoomExitField(room, el) {
 }
 
 function setupRoomEditorFields(room) {
-    const propertyContainer = document.getElementById("property_container")
+    const propertyContainer = document.getElementById("ccontainer")
     const roomExits = document.getElementById('room_exits')
 
     let selectedProp = null
@@ -108,8 +108,14 @@ function setupRoomEditorFields(room) {
         colour: cloneNode(document.getElementById('room_colour')),
         newProperty: cloneNode(document.getElementById('new_property')),
         deleteProperty: cloneNode(document.getElementById('delete_property')),
-        roomTemplate: cloneNode(document.getElementById("room_template"))
+        roomTemplate: cloneNode(document.getElementById("room_template")),
     }
+    ret.props = EditPropsList({
+        entity: room,
+        element: propertyContainer.querySelector(`.property-prop-container`),
+        refresh: () => { setupRoomTemplateFields(room) },
+        update: () => { blurField(room) },
+    }, updateFields, blurField)
 
     ret.roomTemplate.length = 0
     for (let r in roomtemplateslist) {
@@ -126,148 +132,38 @@ function setupRoomEditorFields(room) {
         return
     }
 
-    const updateFields = (targetRoom) => {
-        targetRoom = targetRoom ? targetRoom : room
-        return fetch('http://localhost:8080/api/room', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            uuid: targetRoom.uuid,
-            location: targetRoom.location,
-            name: targetRoom.name,
-            description: targetRoom.description,
-            exits: targetRoom.exits,
-            colour: targetRoom.colour,
-            props: targetRoom.props
-        }) })
+    function updateFields(targetRoom) {
+        targetRoom = targetRoom ? targetRoom : room;
+        return fetch('http://localhost:8080/api/room', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uuid: targetRoom.uuid,
+                location: targetRoom.location,
+                name: targetRoom.name,
+                description: targetRoom.description,
+                exits: targetRoom.exits,
+                colour: targetRoom.colour,
+                props: targetRoom.props
+            })
+        });
     }
 
-    const blurField = (room) => {
-        room.name = ret.name.innerText
-        room.description = ret.description.innerText
-        room.colour = ret.colour.value
+    function blurField(room) {
+        room.name = ret.name.innerText;
+        room.description = ret.description.innerText;
+        room.colour = ret.colour.value;
         updateFields(room).then((response) => {
             if (response.ok) {
-                return response.json()
+                return response.json();
             } else {
-                return response.json().then(v => Promise.reject(response.message))
+                return response.json().then(v => Promise.reject(response.message));
             }
         }).then((data) => {
-            roomslist[data.uuid] = data
-            drawRoom(data)
-        })
+            roomslist[data.uuid] = data;
+            drawRoom(data);
+        });
     }
 
-    propertyContainer.innerHTML = ''
-
-    for (let p in room.props) {
-        let elKey = document.createElement('div')
-        elKey.innerText = p
-        let elValue = document.createElement('div')
-        elValue.innerText = room.props[p]
-
-        elKey.addEventListener('mouseenter', (e) => {
-            elKey.style.color = 'yellow'
-            elValue.style.color = 'yellow'
-        })
-        elKey.addEventListener('mouseleave', (e) => {
-            elKey.style.color = 'black'
-            elValue.style.color = 'black'
-        })
-        elValue.addEventListener('mouseenter', (e) => {
-            elKey.style.color = 'yellow'
-            elValue.style.color = 'yellow'
-        })
-        elValue.addEventListener('mouseleave', (e) => {
-            elKey.style.color = 'black'
-            elValue.style.color = 'black'
-        })
-
-        if (!selectedProp) {
-            ret.deleteProperty.innerText = `Delete Property`
-            ret.deleteProperty.disabled = true
-        }
-
-        elKey.addEventListener('click', (e) => {
-            let elKeyWrap = document.createElement('div')
-            let elKeyEdit = document.createElement('input')
-            elKeyEdit.value = elKey.innerText
-            
-            selectedProp = p
-            if (selectedProp) {
-                ret.deleteProperty.innerText = `Delete Property '${p}'`
-                ret.deleteProperty.disabled = false
-            }
-
-            elKeyEdit.addEventListener('blur', (e) => {
-                elKey.style.color = 'black'
-                elValue.style.color = 'black'
-                if (elKey.innerText !== elKeyEdit.value) {
-                    if (!room.props[elKeyEdit.value]) {
-                        room.props[elKey.innerText] = undefined
-                        delete room.props[elKey.innerText]
-                        elKey.innerText = elKeyEdit.value
-                        room.props[elKey.innerText] = elValue.innerText
-                        updateFields(room).then((response) => {
-                            if (response.ok) {
-                                return response.json()
-                            } else {
-                                return response.json().then(v => Promise.reject(response.message))
-                            }
-                        }).then((data) => {
-                            roomslist[data.uuid] = data
-                        })
-                    } else {
-                        alert(`Error: Key '${elKeyEdit.value}' already exists!`)
-                    }
-                }
-                propertyContainer.replaceChild(elKey, elKeyWrap)
-            })
-
-            elKeyWrap.appendChild(elKeyEdit)
-            propertyContainer.replaceChild(elKeyWrap, elKey)
-            elKeyEdit.focus()
-        })
-        elValue.addEventListener('click', (e) => {
-            let elValueWrap = document.createElement('div')
-            let elValueEdit = document.createElement('input')
-            elValueEdit.value = elValue.innerText
-            
-            selectedProp = p
-            if (selectedProp) {
-                ret.deleteProperty.innerText = `Delete Property '${p}'`
-                ret.deleteProperty.disabled = false
-            }
-
-            elValueEdit.addEventListener('blur', (e) => {
-                elKey.style.color = 'black'
-                elValue.style.color = 'black'
-                if (elValue.innerText !== elValueEdit.value) {
-                    if (room.props[elKey.innerText] !== undefined) {
-                        elValue.innerText = elValueEdit.value
-                        room.props[elKey.innerText] = elValue.innerText
-                        updateFields(room).then((response) => {
-                            if (response.ok) {
-                                return response.json()
-                            } else {
-                                return response.json().then(v => Promise.reject(response.message))
-                            }
-                        }).then((data) => {
-                            roomslist[data.uuid] = data
-                        })
-                    } else {
-                        alert(`Error: Key '${elKey.innerText}' does not exist!`)
-                    }
-                }
-                propertyContainer.replaceChild(elValue, elValueWrap)
-            })
-
-            elValueWrap.appendChild(elValueEdit)
-            propertyContainer.replaceChild(elValueWrap, elValue)
-            elValueEdit.focus()
-        })
-        
-        propertyContainer.appendChild(elKey)
-        propertyContainer.appendChild(elValue)
-    }
     ret.newProperty.addEventListener('click', (e) => {
         let key = prompt('Enter property name (key name):', '')
         if (room.props[key]) {

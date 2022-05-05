@@ -101,7 +101,7 @@ function EditPropsList(params, updateFields, blurField) {
         element: container,
         addProp: () => {
             let key = prompt('Property Name:')
-            if (!props[key]) {
+            if (key && !props[key]) {
                 props[key] = ''
                 params.refresh(params.entity ? params.entity : null)
             }
