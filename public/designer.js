@@ -664,6 +664,27 @@
         setupRoomTemplateFields(data[keys[0]])
         setupRoomEditorFields()
     })
+
+
+    // Load components list
+    fetch('http://localhost:8080/api/components', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+    .then((response) => {
+        if (!response.ok) {
+            return Promise.reject(response)
+        } else {
+            return response.json()
+        }
+    })
+    .catch((response) => {
+        response.text().then(error => {
+            const errorEl = document.getElementById("error")
+            errorEl.innerText += `Error on ${response.url}:\n` + error + '\n'
+            errorEl.style.display = 'block'
+        })
+    })
+    .then((data) => {
+        componentslist = data
+    })
    
     refreshNavItems()
 

@@ -46,7 +46,7 @@
       <div>
         <h4>Room</h4>
         <div class="property-container-header" targetContainer="rcontainer" open="true">Core Properties</div>
-        <div id='rcontainer' class="property-container">
+        <div id='rcontainer'>
           <div>id:</div><p id="room_id" class="editor" style="color: lightgrey;"></p>
           <div>name:</div><p id="room_name" class="editor" contenteditable="true"></p>
           <div>description:</div><p id="room_description" class="editor multirow" contenteditable="true"></p>
@@ -68,6 +68,14 @@
           </div>
           <!-- <div><input type="text" placeholder="custom property name" value="" /></div><div><input type="text" placeholder="property value" value="" /></div> -->
           <div class="footer"><button id="new_property">New Property</button> <button id="delete_property">Delete Property</button></div>
+        </div>
+
+        <div class="property-container-header" targetContainer="rcompcontainer" open="true">Room Components</div>
+        <div id='rcompcontainer'>
+          <button id="add_container">Add Component</button> <select id="component_select"></select>
+          <div style="padding: 1em;">
+              No Components
+          </div>
         </div>
       </div>
       <div>

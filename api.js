@@ -1,5 +1,5 @@
 import express from 'express'
-import { entities, data, rooms, Room, grammar, templates, RoomTemplate, MobileTemplate } from './lib/mudnode.js'
+import { entities, data, rooms, Room, grammar, templates, components, RoomTemplate, MobileTemplate } from './lib/mudnode.js'
 import { getRoomByLocation } from './lib/rooms.js'
 const router = express.Router()
 
@@ -42,7 +42,7 @@ router.post('/process', secureUrl, (req, res) => {
   })
   
   router.post('/room', secureUrl, (req, res) => {
-    if (req.body.templateid && templates.getTemplate(req.body.templateid)) {
+    if (req.body.templateid && templates.getRoomTemplate(req.body.templateid)) {
       if (!getRoomByLocation(req.body.location)) {
         let template = new RoomTemplate(req.body)
         res.send(JSON.stringify(template.GenerateRoom()))
@@ -119,6 +119,15 @@ router.post('/process', secureUrl, (req, res) => {
       }      
     }
   })
+
+  router.post('/components', secureUrl, (req, res) => {
+    let cmp = components.getComponentList()
+    let list = []
+    for (let c in cmp) {
+      list.push(cmp[c].name)
+    }
+    res.send(JSON.stringify(list))
+  })
   
   router.post('/rooms', secureUrl, (req, res) => {
     if (req.body.rooms) {
@@ -132,7 +141,7 @@ router.post('/process', secureUrl, (req, res) => {
   
   router.post('/rooms/templates', secureUrl, (req, res) => {
     if (req.body.templates) {
-      templates.setTemplates(req.body.templates)
+      templates.setRoomTemplates(req.body.templates)
       data.save()
       res.status(200).send()
       return
@@ -141,8 +150,8 @@ router.post('/process', secureUrl, (req, res) => {
   })
 
   router.delete('/rooms/template', secureUrl, (req, res) => {
-    if (req.body.id && templates.getTemplate(req.body.id)) {
-      res.sendStatus(templates.removeTemplate(req.body.id) ? 200 : 500)
+    if (req.body.id && templates.getRoomTemplate(req.body.id)) {
+      res.sendStatus(templates.removeRoomTemplate(req.body.id) ? 200 : 500)
       return
     } else {
       res.status(500).send(`{ "message": "Error: Could not delete template with id '${req.body.id}': not found.}`)

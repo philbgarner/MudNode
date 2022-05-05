@@ -109,6 +109,7 @@ function setupRoomEditorFields(room) {
         newProperty: cloneNode(document.getElementById('new_property')),
         deleteProperty: cloneNode(document.getElementById('delete_property')),
         roomTemplate: cloneNode(document.getElementById("room_template")),
+        component_select: cloneNode(document.getElementById("component_select"))
     }
     ret.props = EditPropsList({
         entity: room,
@@ -130,6 +131,13 @@ function setupRoomEditorFields(room) {
 
     if (!room) {
         return
+    }
+
+    ret.component_select.length = 0
+    for (let c in componentslist) {
+        let opt = document.createElement("option")
+        opt.innerText = componentslist[c]
+        ret.component_select.appendChild(opt)
     }
 
     function updateFields(targetRoom) {

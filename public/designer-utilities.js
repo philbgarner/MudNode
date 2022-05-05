@@ -10,6 +10,7 @@ var dictionary = {}
 var roomslist = {}
 var roomtemplateslist = {}
 var mobstemplatelist = {}
+var componentslist = []
 
 function findRoomAt (x, y, z) {
     for (let r in roomslist) {
