@@ -1,47 +1,47 @@
 const ctx = canvas.getContext('2d');
 
-const drawGrid = () => {
-    ctx.beginPath()
+function drawGrid() {
+    ctx.beginPath();
     for (let j = 0; j < canvas.clientHeight; j += mapScale) {
         for (let i = 0; i < canvas.clientWidth; i += mapScale) {
-            ctx.strokeStyle = '#515151'
-            ctx.setLineDash([1, 2])
-            ctx.rect(i, j, mapScale, mapScale)
+            ctx.strokeStyle = '#515151';
+            ctx.setLineDash([1, 2]);
+            ctx.rect(i, j, mapScale, mapScale);
         }
     }
-    ctx.stroke()
+    ctx.stroke();
 }
 
-const drawRoom = (room) => {
-    let curRoom = currentRoom()
+function drawRoom(room) {
+    let curRoom = currentRoom();
     if (room) {
         // Draw on canvas.
-        ctx.beginPath()
-        let x = room.location.x * mapScale
-        let z = room.location.z * mapScale
-        ctx.fillStyle = room.colour
-        ctx.lineWidth = 1
+        ctx.beginPath();
+        let x = room.location.x * mapScale;
+        let z = room.location.z * mapScale;
+        ctx.fillStyle = room.colour;
+        ctx.lineWidth = 1;
         if (curRoom && curRoom.uuid === room.uuid) {
-            ctx.strokeStyle = '#b1ffb1'
+            ctx.strokeStyle = '#b1ffb1';
         } else {
-            ctx.strokeStyle = '#f1f1f1'
+            ctx.strokeStyle = '#f1f1f1';
         }
-        ctx.clearRect(x, z, mapScale, mapScale)
-        ctx.rect(x, z, mapScale, mapScale)
-        ctx.fill()
+        ctx.clearRect(x, z, mapScale, mapScale);
+        ctx.rect(x, z, mapScale, mapScale);
+        ctx.fill();
         //ctx.stroke()
     }
 }
 
-const drawAllRooms = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    
+function drawAllRooms() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     for (let r in roomslist) {
-        drawRoom(roomslist[r])
+        drawRoom(roomslist[r]);
     }
 
-    drawRoomSelection()
-    drawGrid()
+    drawRoomSelection();
+    drawGrid();
 }
 const getMouseX = (e) => {
     return e.clientX - e.target.offsetLeft + window.scrollX
@@ -109,7 +109,8 @@ function setupRoomEditorFields(room) {
         newProperty: cloneNode(document.getElementById('new_property')),
         deleteProperty: cloneNode(document.getElementById('delete_property')),
         roomTemplate: cloneNode(document.getElementById("room_template")),
-        component_select: cloneNode(document.getElementById("component_select"))
+        component_select: cloneNode(document.getElementById("component_select")),
+        add_component: cloneNode(document.getElementById("add_component"))
     }
     ret.props = EditPropsList({
         entity: room,
@@ -132,6 +133,25 @@ function setupRoomEditorFields(room) {
     if (!room) {
         return
     }
+
+    ret.add_component.addEventListener('click', (e) => {
+        fetch('http://localhost:8080/api/room/components/add', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uuid: room.uuid,
+                componentName: ret.component_select.value
+            })
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.json().then(v => Promise.reject(response.message));
+            }
+        }).then((data) => {
+            roomslist[data.uuid] = data;
+            setupRoomEditorFields(data)
+        });
+    })
 
     ret.component_select.length = 0
     for (let c in componentslist) {

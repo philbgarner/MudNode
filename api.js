@@ -41,6 +41,27 @@ router.post('/process', secureUrl, (req, res) => {
     res.send(grammar.dictionary)
   })
   
+  router.post('/room/components/add', secureUrl, (req, res) => {
+    if (!req.body.uuid) {
+      res.status(500).send(`{ "message": "Error: Must send room uuid." }`)
+      return
+    }
+    let rm = rooms.getRoom(req.body.uuid)
+    if (rm) {
+      if (req.body.componentName && components.getComponentList(req.body.componentName)) {
+        if (rm) {  
+          let cmp = components.getComponentList(req.body.componentName)
+          rm.components.push(new cmp({ parent: rm.uuid }))
+          rm = rooms.setRoom(rm)
+          data.save()
+          res.send(JSON.stringify(rm))
+        } else {
+          res.status(500).send(`{ "message": "Error: Failed to set room ${req.body.uuid}." }`)
+        }
+      }
+    }
+  })
+
   router.post('/room', secureUrl, (req, res) => {
     if (req.body.templateid && templates.getRoomTemplate(req.body.templateid)) {
       if (!getRoomByLocation(req.body.location)) {
