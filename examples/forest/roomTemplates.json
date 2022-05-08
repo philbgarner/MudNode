@@ -1,0 +1,15 @@
+{
+  "Forest": {
+    "id": "Forest",
+    "name": "A [?room.props.biome=forest][*forest_names]\n",
+    "description": "[?room.props.biome=forest][*forest_descriptions]",
+    "colour": "#008000",
+    "props": {
+      "biome": "[*biome_types]",
+      "density": "[*biome_density]"
+    },
+    "mobiles": "",
+    "entities": "",
+    "components": "Forest"
+  }
+}

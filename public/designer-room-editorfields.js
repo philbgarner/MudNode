@@ -178,7 +178,8 @@ function setupRoomEditorFields(room) {
                 description: targetRoom.description,
                 exits: targetRoom.exits,
                 colour: targetRoom.colour,
-                props: targetRoom.props
+                props: targetRoom.props,
+                components: targetRoom.components
             })
         });
     }
