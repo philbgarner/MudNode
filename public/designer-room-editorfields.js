@@ -110,13 +110,20 @@ function setupRoomEditorFields(room) {
         deleteProperty: cloneNode(document.getElementById('delete_property')),
         roomTemplate: cloneNode(document.getElementById("room_template")),
         component_select: cloneNode(document.getElementById("component_select")),
-        add_component: cloneNode(document.getElementById("add_component"))
+        add_component: cloneNode(document.getElementById("add_component")),
+        component_list: cloneNode(document.getElementById("component_list"))
     }
     ret.props = EditPropsList({
         entity: room,
         element: propertyContainer.querySelector(`.property-prop-container`),
         refresh: () => { setupRoomTemplateFields(room) },
         update: () => { blurField(room) },
+    }, updateFields, blurField)
+    ret.components = EditComponent({
+        element: ret.component_list,
+        entity: room,
+        refresh: () => { setupRoomEditorFields(room) },
+        update: () => { blurField(room) }
     }, updateFields, blurField)
 
     ret.roomTemplate.length = 0

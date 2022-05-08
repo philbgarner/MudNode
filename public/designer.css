@@ -352,3 +352,9 @@ mark:hover {
   display: none;
   font-family: 'Lucida Console';
 }
+.component-list-item {
+  margin: 0.15em;
+  padding: 1em;
+  background-color: gray;
+  border-radius: 0.15em;
+}
