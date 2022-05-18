@@ -108,8 +108,10 @@
       </div>
       <div>
         <div class="property-container-header" targetContainer="tcompcontainer" open="true">Components</div>
-        <div class="property-container" id="tcompcontainer">
-          <div>room components:</div><p id="roomtmp_components" class="editor multirow" contenteditable="true"></p>
+        <div id='tcompcontainer'>
+          <button id="add_component">Add Component</button> <select class="component_select"></select>
+          <div style="padding: 1em;" id="component_list">
+          </div>
         </div>
         <div class="property-container-header" targetContainer="tentitiescontainer" open="true">Entities</div>
         <div class="property-container" id="tentitiescontainer">
@@ -156,9 +158,9 @@
     </div>    
 
     <div id="suggestions"></div>
+    <script src="designer-utilities.js"></script>
     <script src="designer-control-editprops.js"></script>
     <script src="designer-control-editcomponent.js"></script>
-    <script src="designer-utilities.js"></script>
     <script src="designer-room-editorfields.js"></script>
     <script src="designer-roomtemplate-editorfields.js"></script>
     <script src="designer-mobtemplates-editorfields.js"></script>

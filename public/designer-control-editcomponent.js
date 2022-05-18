@@ -2,15 +2,13 @@ function EditComponent(params, updateFields, blurField) {
     this.updateFields = updateFields
     this.blurField = blurField
 
-    if (!params.entity || !params.element) {
+    if (!params.entity || !params.element || !params.entity.components) {
         return
     }
-
     let container = params.element
     container.innerHTML = params.entity.components.length === 0 ? 'No Components' : ''
 
     function ComponentControl(component) {
-        console.log(component)
         let div = document.createElement('div')
         div.classList.add('component-list-item')
         let chk = document.createElement('span')

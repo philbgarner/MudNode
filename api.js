@@ -218,4 +218,25 @@ router.post('/process', secureUrl, (req, res) => {
     }
   })
 
+  router.post('/rooms/template/components/add', secureUrl, (req, res) => {
+    if (!req.body.id) {
+      res.status(500).send(`{ "message": "Error: Must send room template id." }`)
+      return
+    }
+    let tm = templates.getRoomTemplate(req.body.id)
+    if (tm) {
+      if (req.body.componentName && components.getComponentList(req.body.componentName)) {
+        if (tm) {  
+          let cmp = components.getComponentList(req.body.componentName)
+          tm.components.push(new cmp({ parent: tm.id }))
+          tm = templates.setRoomTemplate(tm)
+          data.save()
+          res.send(JSON.stringify(tm))
+        } else {
+          res.status(500).send(`{ "message": "Error: Failed to set room template ${req.body.id}." }`)
+        }
+      }
+    }
+  })
+
   export { router as api }

@@ -36,6 +36,9 @@ function drawRoomSelection() {
  * @returns 
  */
 function cloneNode(node) {
+    if (node === null) {
+        return node
+    }
     let old_element = node;
     let new_element = old_element.cloneNode(true);
     old_element.parentNode.replaceChild(new_element, old_element);
