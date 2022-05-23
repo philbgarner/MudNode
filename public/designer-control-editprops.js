@@ -2,6 +2,8 @@ function EditPropsList(params, updateFields, blurField) {
     this.updateFields = updateFields
     this.blurField = blurField
 
+    let updateEntity = params.parent ? params.parent : params.entity
+
     let container = params.element
     container.innerHTML = ''
 
@@ -53,7 +55,7 @@ function EditPropsList(params, updateFields, blurField) {
                         delete props[elKey.innerText]
                         elKey.innerText = elKeyEdit.value
                         props[elKey.innerText] = elValue.innerText
-                        this.blurField(params.entity)
+                        blurField(updateEntity)
                     } else {
                         alert(`Error: Key '${elKeyEdit.value}' already exists!`)
                     }
@@ -80,7 +82,7 @@ function EditPropsList(params, updateFields, blurField) {
                         elValue.innerText = elValueEdit.innerText
                         props[elKey.innerText] = elValue.innerText
                         console.log('blur on', elValue.innerText)
-                        blurField(params.entity)
+                        blurField(updateEntity)
                     } else {
                         alert(`Error: Key '${elKey.innerText}' does not exist!`)
                     }

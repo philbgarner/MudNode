@@ -9,8 +9,8 @@ function setupRoomTemplateFields(template) {
         components: cloneNode(document.getElementById("roomtmp_components")),
         mobiles: cloneNode(document.getElementById("roomtmp_mobiles")),
         entities: cloneNode(document.getElementById("roomtmp_entities")),
-        component_list: cloneNode(document.getElementById('component_list')),
-        component_select: cloneNode(element.querySelector(".component_select")),
+        component_list: cloneNode(element.querySelector('#component_list')),
+        component_select: cloneNode(element.querySelector("#component_select")),
         add_component: cloneNode(element.querySelector("#add_component")),
         remove_template: cloneNode(document.getElementById("remove_template")),
         new_template: cloneNode(document.getElementById("new_template")),
@@ -48,6 +48,10 @@ function setupRoomTemplateFields(template) {
     })
 
     ret.add_component.addEventListener('click', (e) => {
+        console.log({
+            id: template.id,
+            componentName: ret.component_select.value
+        })
         fetch('http://localhost:8080/api/rooms/template/components/add', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -62,7 +66,7 @@ function setupRoomTemplateFields(template) {
             }
         }).then((data) => {
             roomtemplateslist[data.id] = data;
-            setupRoomEditorFields(data)
+            setupRoomTemplateEditorFields(data)
         });
     })
 

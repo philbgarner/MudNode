@@ -31,6 +31,7 @@ function EditComponent(params, updateFields, blurField) {
         propscontainer.classList.add('custom-property-container')
         let propslist = EditPropsList({
             entity: component,
+            parent: params.entity,
             element: propscontainer,
             refresh: () => { params.refresh(params.entity) },
             update: () => { params.blurField(params.entity) },

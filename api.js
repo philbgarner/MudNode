@@ -72,7 +72,8 @@ router.post('/process', secureUrl, (req, res) => {
       }
     } else {
       if (req.body.uuid && rooms.getRoom(req.body.uuid)) {
-        let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description, exits: req.body.exits, colour: req.body.colour, props: req.body.props })
+        let rm = rooms.setRoom({ uuid: req.body.uuid, name: req.body.name, description: req.body.description,
+          exits: req.body.exits, colour: req.body.colour, props: req.body.props, components: req.body.components })
         if (rm) {
           data.save()
           res.send(JSON.stringify(rm))
@@ -228,6 +229,7 @@ router.post('/process', secureUrl, (req, res) => {
       if (req.body.componentName && components.getComponentList(req.body.componentName)) {
         if (tm) {  
           let cmp = components.getComponentList(req.body.componentName)
+          console.log(req.body, cmp)
           tm.components.push(new cmp({ parent: tm.id }))
           tm = templates.setRoomTemplate(tm)
           data.save()
