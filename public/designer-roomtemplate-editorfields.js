@@ -48,10 +48,6 @@ function setupRoomTemplateFields(template) {
     })
 
     ret.add_component.addEventListener('click', (e) => {
-        console.log({
-            id: template.id,
-            componentName: ret.component_select.value
-        })
         fetch('http://localhost:8080/api/rooms/template/components/add', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

@@ -1,5 +1,5 @@
 function setupMobileEditorFields(mobile) {
-    let element = document.getElementById("mpropcontainer")
+    let element = document.getElementById("mobtemplateseditor")
     let ret = {
         id: document.getElementById("mobtmp_id"),
         name: cloneNode(document.getElementById("mobtmp_name")),
@@ -14,12 +14,22 @@ function setupMobileEditorFields(mobile) {
         element: element,
         newProperty: cloneNode(element.querySelectorAll('.footer > button')[0]),
         delProperty: cloneNode(element.querySelectorAll('.footer > button')[1]),
+        components: cloneNode(document.getElementById("mobtmp_components")),
+        component_select: cloneNode(element.querySelector("#component_select")),
+        component_list: cloneNode(element.querySelector('#component_list')),
+        add_component: cloneNode(element.querySelector("#add_component"))
     }
     ret.props = EditPropsList({
             entity: mobile,
             element: element.querySelector(`.property-prop-container`),
             refresh: () => { setupMobileEditorFields(mobile) },
             update: () => { blurField(mobile) },
+        }, updateFields, blurField)
+    ret.components = EditComponent({
+            element: ret.component_list,
+            entity: mobile,
+            refresh: () => { setupMobileEditorFields(mobile) },
+            update: () => { blurField(mobile) }
         }, updateFields, blurField)
 
     ret.newMobile.addEventListener('click', (e) => {
@@ -56,8 +66,34 @@ function setupMobileEditorFields(mobile) {
         return
     })
 
+    ret.add_component.addEventListener('click', (e) => {
+        fetch('http://localhost:8080/api/mobiles/template/components/add', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: template.id,
+                componentName: ret.component_select.value
+            })
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.json().then(v => Promise.reject(response.message));
+            }
+        }).then((data) => {
+            roomtemplateslist[data.id] = data;
+            setupRoomTemplateEditorFields(data)
+        });
+    })
+
     if (!mobile) {
         return false
+    }
+
+    ret.component_select.length = 0
+    for (let c in componentslist) {
+        let opt = document.createElement("option")
+        opt.innerText = componentslist[c]
+        ret.component_select.appendChild(opt)
     }
     ret.selected.value = mobile.id
     ret.id.innerText = mobile.id
