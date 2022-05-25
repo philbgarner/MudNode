@@ -229,13 +229,33 @@ router.post('/process', secureUrl, (req, res) => {
       if (req.body.componentName && components.getComponentList(req.body.componentName)) {
         if (tm) {  
           let cmp = components.getComponentList(req.body.componentName)
-          console.log(req.body, cmp)
           tm.components.push(new cmp({ parent: tm.id }))
           tm = templates.setRoomTemplate(tm)
           data.save()
           res.send(JSON.stringify(tm))
         } else {
           res.status(500).send(`{ "message": "Error: Failed to set room template ${req.body.id}." }`)
+        }
+      }
+    }
+  })
+
+  router.post('/mobiles/template/components/add', secureUrl, (req, res) => {
+    if (!req.body.id) {
+      res.status(500).send(`{ "message": "Error: Must send mobile template id." }`)
+      return
+    }
+    let mb = templates.getMobileTemplate(req.body.id)
+    if (mb) {
+      if (req.body.componentName && components.getComponentList(req.body.componentName)) {
+        if (mb) {  
+          let cmp = components.getComponentList(req.body.componentName)
+          mb.components.push(new cmp({ parent: mb.id }))
+          mb = templates.setMobileTemplate(mb)
+          data.save()
+          res.send(JSON.stringify(mb))
+        } else {
+          res.status(500).send(`{ "message": "Error: Failed to set mobile template ${req.body.id}." }`)
         }
       }
     }

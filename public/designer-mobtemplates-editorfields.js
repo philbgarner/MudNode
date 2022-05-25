@@ -70,7 +70,7 @@ function setupMobileEditorFields(mobile) {
         fetch('http://localhost:8080/api/mobiles/template/components/add', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                id: template.id,
+                id: mobile.id,
                 componentName: ret.component_select.value
             })
         }).then((response) => {
@@ -80,8 +80,8 @@ function setupMobileEditorFields(mobile) {
                 return response.json().then(v => Promise.reject(response.message));
             }
         }).then((data) => {
-            roomtemplateslist[data.id] = data;
-            setupRoomTemplateEditorFields(data)
+            mobstemplatelist[data.id] = data;
+            setupMobileEditorFields(data)
         });
     })
 
