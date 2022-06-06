@@ -222,11 +222,11 @@ loadData().catch(() => console.log(`Couldn't find a data folder to load. Proceed
       }, configData.roomsTimeout)
 
       // TODO: Set this to active/instantiated mobiles, getMobiles is templates.
-      // setInterval(() => {
-      //   let mobs = entities.getMobiles()
-      //   for (let m in mobs) {
-      //     mobs[m].Update()
-      //   }
-      // }, configData.mobilesTimeout)
+      setInterval(() => {
+        let mobs = entities.getMobiles()
+        for (let m in mobs) {
+          mobs[m].Update()
+        }
+      }, configData.mobilesTimeout)
 
     }))
